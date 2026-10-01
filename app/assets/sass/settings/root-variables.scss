@@ -1,0 +1,12 @@
+:root {
+  @each $key, $name in $fonts {
+    --font-#{$key}: #{$name};
+  }
+
+  @each $name, $color in $colors {
+    --color-#{$name}: #{$color};
+  }
+
+  --app-header-height: 80px;
+  --app-offset-padding: 100px;
+}

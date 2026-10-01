@@ -1,0 +1,26 @@
+@use "sass:math";
+
+$default-window-width: 1920 !default;
+$default-window-height: 1080 !default;
+
+$default-timing-speed: 0.35s;
+$default-timing-func: cubic-bezier(0.33, 1, 0.68, 1);
+
+$colors: (
+  "transparent": transparent,
+  "bg-page": #070c1c,
+  "bg-card": #1e2031,
+  "bg-raised": #2a2c3d,
+  "text-primary": #ffffff,
+  "text-secondary": #a9a9a9,
+  "text-disabled": #505261,
+  "red": #ec3013,
+  "green": #4ade80,
+  "orange": #e27e04,
+);
+
+$fonts: (
+  "archivo-regular": "Archivo-Regular",
+  "archivo-semibold": "Archivo-SemiBold",
+  "archivo-extrabold": "Archivo-ExtraBold",
+);
