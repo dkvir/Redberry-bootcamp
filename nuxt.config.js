@@ -21,7 +21,12 @@ export default defineNuxtConfig({
       // script: [{ src: "/js/SplitText.min.js" }],
     },
   },
-  modules: ["@pinia/nuxt", "nuxt-icons"],
+  modules: ["@pinia/nuxt", "nuxt-icons", "@vueuse/nuxt"],
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.API_URL,
+    },
+  },
   css: ["~/assets/sass/style.scss"],
   vite: {
     build: {

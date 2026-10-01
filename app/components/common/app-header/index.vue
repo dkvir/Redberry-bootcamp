@@ -1,0 +1,58 @@
+<template>
+  <div class="app-header flex justify-between">
+    <div class="left-wrapper flex-center">
+      <nuxt-link class="logo-link" to="/">
+        <nuxt-icon name="logo" class="logo-icon" filled />
+      </nuxt-link>
+      <nuxt-link class="session-link f-overline" to="/session">
+        sessions
+      </nuxt-link>
+    </div>
+    <div class="right-wrapper flex-center">
+      <common-app-header-search />
+      <div class="buttons flex-center">
+        <tiny-buttons-primary label="Sign up" />
+        <tiny-buttons-secondary label="Log in" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup></script>
+
+<style lang="scss" scoped>
+.app-header {
+  width: 100vw;
+  height: var(--app-header-height);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.51) 80%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  padding: 30px 60px;
+
+  .left-wrapper {
+    margin-top: 10px;
+    height: 22px;
+    gap: 36px;
+  }
+
+  .logo-link {
+    height: 100%;
+    display: inline-block;
+  }
+
+  .session-link {
+    color: var(--color-text-primary);
+  }
+
+  .right-wrapper {
+    gap: 32px;
+  }
+
+  .buttons {
+    gap: 12px;
+  }
+}
+</style>

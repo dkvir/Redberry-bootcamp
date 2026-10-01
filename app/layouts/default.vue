@@ -1,6 +1,7 @@
 <template>
   <Html>
     <Body>
+      <common-app-header />
       <div class="default-layout">
         <slot />
       </div>
