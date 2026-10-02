@@ -10,15 +10,24 @@
     </div>
     <div class="right-wrapper flex-center">
       <common-app-header-search />
-      <div class="buttons flex-center">
-        <tiny-buttons-primary label="Sign up" />
-        <tiny-buttons-secondary label="Log in" />
+      <common-app-header-profile v-if="authStore.isLoggedIn" />
+      <div v-else class="buttons flex-center">
+        <tiny-buttons-primary label="Sign up" @click="openAuth('signup')" />
+        <tiny-buttons-secondary label="Log in" @click="openAuth('login')" />
       </div>
     </div>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { useAuthStore } from "~/stores/common/auth";
+const authStore = useAuthStore();
+
+const openAuth = (state) => {
+  authStore.changeActiveState(state);
+  authStore.toggleAuthVisibility();
+};
+</script>
 
 <style lang="scss" scoped>
 .app-header {

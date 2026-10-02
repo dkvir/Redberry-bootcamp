@@ -8,5 +8,6 @@
 
 <style lang="scss" scoped>
 .home-page {
+  height: 200vh;
 }
 </style>

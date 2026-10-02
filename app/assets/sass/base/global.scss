@@ -18,7 +18,7 @@ html {
   line-height: 1;
   color: var(--color-text-primary);
   background-color: var(--color-bg-page);
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 ::selection {
