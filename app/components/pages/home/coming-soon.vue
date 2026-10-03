@@ -23,8 +23,9 @@
             <tiny-chip :label="movie.ageRating.code" red />
           </div>
           <tiny-buttons-notify
-            label="Notify Me"
-            :disabled="notifyingSlug === movie.slug"
+            :label="notified[movie.slug] ? 'Reminder Set' : 'Notify Me'"
+            :icon-name="notified[movie.slug] ? 'check' : 'notify'"
+            :disabled="notifyingSlug === movie.slug || notified[movie.slug]"
             @click.stop="clickNotify(movie)"
           />
         </div>
@@ -34,13 +35,14 @@
 </template>
 
 <script setup>
-import { useCatalogueStore } from "~/stores/common/catalogue";
+import { useCatalogueStore } from "~/stores/pages/catalogue";
 import { useAuthStore } from "~/stores/common/auth";
 
 const catalogueStore = useCatalogueStore();
 const authStore = useAuthStore();
 
 const notifyingSlug = ref(null);
+const notified = ref({});
 
 await useAsyncData("coming-soon-movies", () =>
   catalogueStore.fetchComingSoonMovies(),
@@ -53,13 +55,16 @@ const formatDate = (date) =>
   });
 
 const clickNotify = async (movie) => {
-  notifyingSlug.value = movie.slug;
+  const slug = movie.slug;
+  if (notifyingSlug.value === slug || notified.value[slug]) return;
+
+  notifyingSlug.value = slug;
   try {
-    await catalogueStore.notifyMovie(movie.slug);
+    await catalogueStore.notifyMovie(slug);
+    notified.value[slug] = true;
   } catch (e) {
     if (e?.statusCode === 401) {
       authStore.requireLogin(() => clickNotify(movie));
-    } else {
     }
   } finally {
     notifyingSlug.value = null;

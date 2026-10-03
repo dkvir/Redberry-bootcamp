@@ -1,6 +1,6 @@
 <template>
   <button class="notify-button f-button flex-center">
-    <nuxt-icon name="notify" class="notify-icon" filled />
+    <nuxt-icon v-if="iconName" :name="iconName" class="icon" filled />
     <span class="span">{{ label }}</span>
   </button>
 </template>
@@ -10,6 +10,9 @@ const props = defineProps({
   label: {
     type: String,
     required: true,
+  },
+  iconName: {
+    type: String,
   },
 });
 </script>
@@ -29,6 +32,12 @@ const props = defineProps({
 
   &:hover {
     --button-bg: var(--color-tint-white);
+  }
+
+  :deep(.icon) {
+    path {
+      stroke: var(--color-text-primary);
+    }
   }
 }
 </style>

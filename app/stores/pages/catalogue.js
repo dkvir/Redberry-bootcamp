@@ -1,4 +1,4 @@
-import { useAuthStore } from "./auth";
+import { useAuthStore } from "~/stores/common/auth";
 
 export const useCatalogueStore = defineStore("catalogueStore", () => {
   const config = useRuntimeConfig();
