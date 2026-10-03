@@ -11,9 +11,17 @@
 </template>
 
 <script setup>
+import { useCatalogueStore } from "~/stores/common/catalogue";
+
 useHead({
   titleTemplate: "KINO XII | Redberry Bootcamp",
 });
+
+const catalogueStore = useCatalogueStore();
+
+await useAsyncData("featured-movies", () =>
+  catalogueStore.fetchFeaturedMovies(),
+);
 </script>
 
 <style lang="scss" scoped>

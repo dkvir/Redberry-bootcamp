@@ -1,4 +1,4 @@
-export const MIN_PASSWORD = 8;
+export const MIN_PASSWORD = 3;
 
 export const required = (msg) => (v) => (v?.trim() ? "" : msg);
 

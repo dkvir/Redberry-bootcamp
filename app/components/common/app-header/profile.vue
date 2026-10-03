@@ -1,6 +1,6 @@
 <template>
   <div class="profile">
-    <div class="small-info flex-center">
+    <div @click="clickSmallInfo" class="small-info flex-center">
       <div class="avatar flex-center">
         <img
           v-if="authStore.user.avatar"
@@ -24,10 +24,26 @@
       <div class="name flex-center">
         <span class="span f-label-m">{{ authStore.user.username }}</span>
 
-        <nuxt-icon name="arrow-down" class="arrow-icon" filled />
+        <nuxt-icon
+          name="arrow-down"
+          :class="[
+            'arrow-icon',
+            {
+              'is-flipped': fullInfoVisible,
+            },
+          ]"
+          filled
+        />
       </div>
     </div>
-    <div class="full-info"></div>
+    <div
+      :class="[
+        'full-info',
+        {
+          'is-visible': fullInfoVisible,
+        },
+      ]"
+    ></div>
   </div>
 </template>
 
@@ -36,6 +52,10 @@ import { useAuthStore } from "~/stores/common/auth";
 const authStore = useAuthStore();
 
 const fullInfoVisible = ref(false);
+
+const clickSmallInfo = () => {
+  fullInfoVisible.value = !fullInfoVisible.value;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -75,6 +95,35 @@ const fullInfoVisible = ref(false);
 
     .name {
       gap: 24px;
+    }
+
+    .arrow-icon {
+      height: 16px;
+      transform: rotate(var(--icon-rotation, 0deg));
+      @include default-transitions(transform);
+
+      &.is-flipped {
+        --icon-rotation: 180deg;
+      }
+    }
+  }
+
+  .full-info {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    padding: 8px;
+    width: 100%;
+    background-color: var(--color-bg-page);
+    border-radius: 16px;
+    border: 1px solid var(--color-bg-raised);
+    opacity: var(--result-frame-opacity, 0);
+    pointer-events: none;
+    @include default-transitions(opacity);
+
+    &.is-visible {
+      --result-frame-opacity: 1;
+      pointer-events: auto;
     }
   }
 }

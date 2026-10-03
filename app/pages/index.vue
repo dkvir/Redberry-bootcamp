@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <h1 class="title f-display">as;lfknaslkf aslk nfaslkn faslk nasl</h1>
+    <pages-home-hero />
   </div>
 </template>
 
@@ -8,6 +8,7 @@
 
 <style lang="scss" scoped>
 .home-page {
-  height: 200vh;
+  width: 100%;
+  min-height: 100vh;
 }
 </style>

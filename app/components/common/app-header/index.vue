@@ -31,6 +31,11 @@ const openAuth = (state) => {
 
 <style lang="scss" scoped>
 .app-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 8;
   width: 100vw;
   height: var(--app-header-height);
   background: linear-gradient(
