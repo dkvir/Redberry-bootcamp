@@ -6,6 +6,7 @@
       <div class="default-layout">
         <slot />
       </div>
+      <common-app-footer />
     </Body>
   </Html>
 </template>

@@ -69,7 +69,7 @@ const clickNotify = async (movie) => {
 
 <style lang="scss" scoped>
 .coming-soon {
-  padding: 40px 70px 0 70px;
+  padding: 40px 70px;
   border-top: 1px solid var(--color-bg-raised);
   gap: 24px;
 
