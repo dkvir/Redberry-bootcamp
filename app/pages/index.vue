@@ -1,6 +1,7 @@
 <template>
   <div class="home-page">
     <pages-home-hero />
+    <pages-home-now-playing />
   </div>
 </template>
 

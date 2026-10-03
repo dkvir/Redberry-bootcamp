@@ -1,6 +1,7 @@
 export const useCatalogueStore = defineStore("catalogueStore", () => {
   const config = useRuntimeConfig();
 
+  // Featured Movies
   const featuredMovies = ref([]);
   const featuredLoading = ref(false);
   const featuredError = ref(null);
@@ -21,10 +22,60 @@ export const useCatalogueStore = defineStore("catalogueStore", () => {
     }
   }
 
+  //Now Playing Movies
+  const nowPlayngMovies = ref([]);
+  const nowPlayngLoading = ref(false);
+  const nowPlayngError = ref(null);
+
+  async function fetchNowPlayingMovies() {
+    nowPlayngLoading.value = true;
+    nowPlayngError.value = null;
+    try {
+      const res = await $fetch("/movies/now-playing", {
+        baseURL: config.public.apiBase,
+      });
+      nowPlayngMovies.value = res.data;
+    } catch (e) {
+      nowPlayngError.value =
+        e?.data?.message ?? "Failed to load featured movies";
+    } finally {
+      nowPlayngLoading.value = false;
+    }
+  }
+
+  //Coming Soon Movies
+  const comingSoonMovies = ref([]);
+  const comingSoonLoading = ref(false);
+  const comingSoonError = ref(null);
+
+  async function fetchComingSoonMovies() {
+    comingSoonLoading.value = true;
+    comingSoonError.value = null;
+    try {
+      const res = await $fetch("/movies/now-playing", {
+        baseURL: config.public.apiBase,
+      });
+      comingSoonMovies.value = res.data;
+    } catch (e) {
+      comingSoonError.value =
+        e?.data?.message ?? "Failed to load featured movies";
+    } finally {
+      comingSoonLoading.value = false;
+    }
+  }
+
   return {
     featuredMovies,
     featuredLoading,
     featuredError,
     fetchFeaturedMovies,
+    nowPlayngMovies,
+    nowPlayngLoading,
+    nowPlayngError,
+    fetchNowPlayingMovies,
+    comingSoonMovies,
+    comingSoonLoading,
+    comingSoonError,
+    fetchComingSoonMovies,
   };
 });

@@ -89,6 +89,10 @@ const AUTOPLAY_DELAY = 5000;
 
 const catalogueStore = useCatalogueStore();
 
+await useAsyncData("featured-movies", () =>
+  catalogueStore.fetchFeaturedMovies(),
+);
+
 const swiper = ref(null);
 const activeIndex = ref(0);
 const progress = ref(0);
