@@ -1,5 +1,5 @@
 <template>
-  <div class="profile">
+  <div ref="profileRef" class="profile">
     <div @click="clickSmallInfo" class="small-info flex-center">
       <div class="avatar flex-center">
         <img
@@ -49,9 +49,14 @@
 
 <script setup>
 import { useAuthStore } from "~/stores/common/auth";
+import { onClickOutside } from "@vueuse/core";
+
 const authStore = useAuthStore();
 
 const fullInfoVisible = ref(false);
+const profileRef = ref(null);
+
+onClickOutside(profileRef, () => (fullInfoVisible.value = false));
 
 const clickSmallInfo = () => {
   fullInfoVisible.value = !fullInfoVisible.value;

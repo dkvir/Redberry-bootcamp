@@ -1,6 +1,16 @@
 # Nuxt Minimal Starter
 
+## Live Demo
+
+The project is deployed and available here:
+
+**https://redberry-bootcamp-iota.vercel.app/**
+
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+
+## Requirements
+
+- [Node.js](https://nodejs.org/) `24.19.0`
 
 ## Setup
 
@@ -20,9 +30,21 @@ yarn install
 bun install
 ```
 
+## Environment Variables
+
+Before running the project, create your `.env` file from the provided `.env.example` file:
+
+```bash
+cp .env.example .env
+```
+
+Then update the `.env` file with the required environment variables.
+
+> **Note:** Never commit your `.env` file to the repository. Keep your environment-specific values private.
+
 ## Development Server
 
-Start the development server on `http://localhost:3000`:
+Start the development server at `http://localhost:3000`:
 
 ```bash
 # npm
@@ -56,7 +78,7 @@ yarn build
 bun run build
 ```
 
-Locally preview production build:
+Locally preview the production build:
 
 ```bash
 # npm
