@@ -2,6 +2,7 @@
   <div class="home-page">
     <pages-home-hero />
     <pages-home-now-playing />
+    <pages-home-coming-soon />
   </div>
 </template>
 

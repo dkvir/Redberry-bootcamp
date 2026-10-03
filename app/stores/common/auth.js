@@ -11,10 +11,19 @@ export const useAuthStore = defineStore("authStore", () => {
     sameSite: "lax",
   });
 
+  const pendingAction = ref(null);
   const isLoggedIn = computed(() => !!user.value);
 
   const toggleAuthVisibility = (value = !isOpen.value) => {
     isOpen.value = value;
+
+    if (!value) pendingAction.value = null;
+  };
+
+  const requireLogin = (onSuccess) => {
+    pendingAction.value = onSuccess;
+    activeState.value = "login";
+    isOpen.value = true;
   };
 
   const changeActiveState = (state) => {
@@ -35,7 +44,9 @@ export const useAuthStore = defineStore("authStore", () => {
   const startSession = ({ data }) => {
     token.value = data.token;
     user.value = data.user;
+    const action = pendingAction.value;
     toggleAuthVisibility(false);
+    action?.();
   };
 
   const clearSession = () => {
@@ -78,10 +89,12 @@ export const useAuthStore = defineStore("authStore", () => {
     token,
     isLoggedIn,
     toggleAuthVisibility,
+    requireLogin,
     changeActiveState,
     login,
     register,
     fetchMe,
     logout,
+    call,
   };
 });

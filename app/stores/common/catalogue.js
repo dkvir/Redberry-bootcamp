@@ -1,5 +1,8 @@
+import { useAuthStore } from "./auth";
+
 export const useCatalogueStore = defineStore("catalogueStore", () => {
   const config = useRuntimeConfig();
+  const authStore = useAuthStore();
 
   // Featured Movies
   const featuredMovies = ref([]);
@@ -64,6 +67,10 @@ export const useCatalogueStore = defineStore("catalogueStore", () => {
     }
   }
 
+  //notify me
+  const notifyMovie = (slug) =>
+    authStore.call(`/movies/${slug}/notify`, { method: "POST" });
+
   return {
     featuredMovies,
     featuredLoading,
@@ -77,5 +84,6 @@ export const useCatalogueStore = defineStore("catalogueStore", () => {
     comingSoonLoading,
     comingSoonError,
     fetchComingSoonMovies,
+    notifyMovie,
   };
 });

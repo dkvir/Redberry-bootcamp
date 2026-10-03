@@ -17,19 +17,26 @@
         <img class="slide-bg" :src="movie.backdropUrl" :alt="movie.title" />
 
         <div class="content flex-column align-start">
-          <div class="chip age uppercase f-label-s">
-            premiere · week of {{ formatDate(movie.releaseDate) }}
-          </div>
+          <tiny-chip
+            class="uppercase"
+            :label="`premiere · week of ${formatDate(movie.releaseDate)}`"
+            red
+          />
           <h2 class="title f-display uppercase">{{ movie.title }}</h2>
-          <div class="chips flex-center f-label-s">
-            <div class="chip age">{{ movie.ageRating.code }}</div>
-            <div class="chip flex-center">
-              <nuxt-icon name="timer" class="timer-icon" filled />
-              <span class="span">{{ movie.runtimeMinutes }} Min</span>
-            </div>
-            <div v-for="format in movie.formats" :key="format.id" class="chip">
-              {{ format.name }}
-            </div>
+          <div class="chips flex-center">
+            <tiny-chip :label="movie.ageRating.code" red />
+
+            <tiny-chip
+              :label="`${movie.ageRating.code} Min`"
+              iconName="timer"
+            />
+
+            <tiny-chip
+              v-for="format in movie.formats"
+              :key="format.id"
+              :label="format.name"
+              iconName="timer"
+            />
           </div>
 
           <p class="synopsis f-body-m">{{ movie.synopsis }}</p>
@@ -167,19 +174,6 @@ const formatDate = (date) =>
     gap: 10px;
   }
 
-  .chip {
-    gap: 4px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background-color: var(--chip-bg, var(--color-tint-white));
-    color: var(--color-text-primary);
-
-    &.age {
-      --chip-bg: var(--color-tint-red);
-      color: var(--color-red);
-    }
-  }
-
   .actions {
     gap: 12px;
   }
@@ -203,6 +197,7 @@ const formatDate = (date) =>
       flex: 1;
       height: 3px;
       background-color: var(--bar-bg, var(--color-text-primary));
+      border-radius: 999px;
       cursor: pointer;
       @include default-transitions(background-color);
 

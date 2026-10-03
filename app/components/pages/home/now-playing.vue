@@ -1,9 +1,6 @@
 <template>
   <div class="now-playing">
-    <div class="header flex-center justify-between">
-      <h1 class="span f-h1">NOW PLAYING</h1>
-      <nuxt-link to="/sesions" class="link f-label-m"> See all </nuxt-link>
-    </div>
+    <pages-home-tiny-section-header title="NOW PLAYING" />
 
     <ul class="list flex-center justify-start">
       <li
@@ -23,7 +20,7 @@
             <p class="genre f-body-s">
               {{ movie.genres[0].name }} · {{ movie.runtimeMinutes }} mins
             </p>
-            <div class="chip age">{{ movie.ageRating.code }}</div>
+            <tiny-chip :label="movie.ageRating.code" red />
             <p class="synopsis f-body-m">
               {{ movie.synopsis }}
             </p>
@@ -54,18 +51,7 @@ await useAsyncData("now-playing-movies", () =>
 .now-playing {
   width: 100%;
   margin-top: 32px;
-  padding: 0 70px;
-
-  .header {
-    .span {
-      color: var(--color-text-primary);
-    }
-
-    .link {
-      color: var(--color-red);
-      cursor: pointer;
-    }
-  }
+  padding: 0 70px 40px;
 
   .list {
     --item-gap: 15px;
@@ -140,14 +126,6 @@ await useAsyncData("now-playing-movies", () =>
     }
     .genre {
       color: var(--color-text-secondary);
-    }
-
-    .chip {
-      width: min-content;
-      padding: 6px 12px;
-      border-radius: 999px;
-      background-color: var(--color-tint-red);
-      color: var(--color-red);
     }
 
     .synopsis {
