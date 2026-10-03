@@ -44,7 +44,7 @@ const openAuth = (state) => {
     rgba(0, 0, 0, 0.51) 80%,
     rgba(0, 0, 0, 0) 100%
   );
-  padding: 30px 60px;
+  padding: 30px 120px;
 
   .left-wrapper {
     margin-top: 10px;
