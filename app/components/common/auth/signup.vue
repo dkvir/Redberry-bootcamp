@@ -2,7 +2,7 @@
   <div
     :class="[
       'signup flex-column',
-      { 'is-active': authStore.activeState == 'signup' },
+      { 'is-active': authStore.isOpen && authStore.activeState == 'signup' },
     ]"
   >
     <div class="fields flex-column">

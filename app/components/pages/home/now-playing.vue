@@ -76,6 +76,7 @@ await useAsyncData("now-playing-movies", () =>
         transparent 0%,
         var(--color-bg-page) 100%
       );
+      pointer-events: none;
     }
   }
 

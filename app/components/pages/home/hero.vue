@@ -35,7 +35,6 @@
               v-for="format in movie.formats"
               :key="format.id"
               :label="format.name"
-              iconName="timer"
             />
           </div>
 

@@ -97,6 +97,7 @@ const clickNotify = async (movie) => {
         transparent 0%,
         var(--color-bg-page) 100%
       );
+      pointer-events: none;
     }
   }
 
