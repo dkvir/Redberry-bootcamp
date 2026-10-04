@@ -95,9 +95,10 @@ const AUTOPLAY_DELAY = 5000;
 
 const catalogueStore = useCatalogueStore();
 
-await useAsyncData("featured-movies", () =>
-  catalogueStore.fetchFeaturedMovies(),
-);
+await useAsyncData("featured-movies", async () => {
+  await catalogueStore.fetchFeaturedMovies();
+  return catalogueStore.featuredMovies;
+});
 
 const swiper = ref(null);
 const activeIndex = ref(0);

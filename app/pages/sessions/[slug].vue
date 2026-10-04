@@ -14,7 +14,10 @@ const recentsStore = useRecentsStore();
 
 await useAsyncData(
   () => `movie-${route.params.slug}`,
-  () => detailsStore.fetchMovie(route.params.slug),
+  async () => {
+    await detailsStore.fetchMovie(route.params.slug);
+    return detailsStore.movie;
+  },
   { watch: [() => route.params.slug] },
 );
 

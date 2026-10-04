@@ -44,9 +44,10 @@ const authStore = useAuthStore();
 const notifyingSlug = ref(null);
 const notified = ref({});
 
-await useAsyncData("coming-soon-movies", () =>
-  catalogueStore.fetchComingSoonMovies(),
-);
+await useAsyncData("coming-soon-movies", async () => {
+  await catalogueStore.fetchComingSoonMovies();
+  return catalogueStore.comingSoonMovies;
+});
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-GB", {

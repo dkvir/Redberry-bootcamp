@@ -40,9 +40,10 @@ import { useCatalogueStore } from "~/stores/pages/home/catalogue";
 
 const catalogueStore = useCatalogueStore();
 
-await useAsyncData("now-playing-movies", () =>
-  catalogueStore.fetchNowPlayingMovies(),
-);
+await useAsyncData("now-playing-movies", async () => {
+  await catalogueStore.fetchNowPlayingMovies();
+  return catalogueStore.nowPlayngMovies;
+});
 </script>
 
 <style lang="scss" scoped>
