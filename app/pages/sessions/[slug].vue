@@ -2,7 +2,11 @@
   <div class="movie-details-page">
     <div v-if="detailsStore.movie" class="movie-details-page">
       <pages-details-overview :movie="detailsStore.movie" />
-      <pages-details-sessions :movie="detailsStore.movie" />
+
+      <section class="sessions flex-start">
+        <pages-details-sessions-info :movie="detailsStore.movie" />
+        <pages-details-sessions-movie-details :movie="detailsStore.movie" />
+      </section>
     </div>
   </div>
 </template>
@@ -47,5 +51,12 @@ onMounted(() => {
 .movie-details-page {
   width: 100%;
   min-height: 100vh;
+
+  .sessions {
+    padding: 34px 51px;
+    gap: 10px;
+    width: 100%;
+    min-height: 70vh;
+  }
 }
 </style>

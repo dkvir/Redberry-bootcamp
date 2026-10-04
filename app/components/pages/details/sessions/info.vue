@@ -11,21 +11,42 @@
       v-model="selectedDate"
       :dates="availableDates"
     />
-    <ul class="venue-list">
+    <ul v-if="venueGroups.length > 0" class="venue-list">
       <li v-for="(theater, index) in venueGroups" :key="index" class="venue">
         <pages-details-sessions-venue :theater="theater" />
       </li>
     </ul>
+    <div v-else class="no-sessions f-h2">
+      There are no sessions on this date.
+    </div>
   </div>
 </template>
 
 <script setup>
+import { useDetailsStore } from "~/stores/pages/details";
+
 const props = defineProps({
-  sessionsByDate: { type: Object, required: true },
-  movie: { type: Object, required: true },
+  movie: {
+    type: Object,
+    required: true,
+  },
 });
 
-const availableDates = computed(() => props.movie?.availableDates ?? []);
+const availableDates = computed(
+  () => props.movie?.availableDates.slice(0, 7) ?? [],
+);
+const route = useRoute();
+const detailsStore = useDetailsStore();
+
+await useAsyncData(
+  () => `movie-sessions-${route.params.slug}`,
+  async () => {
+    if (!availableDates.value.length) return {};
+    await detailsStore.fetchSessions(route.params.slug, availableDates.value);
+    return detailsStore.sessionsByDate;
+  },
+  { watch: [() => route.params.slug] },
+);
 
 const pickDefaultDate = (dates) => {
   const today = toLocalISODate(new Date());
@@ -47,14 +68,14 @@ watch(
 );
 
 const venueGroups = computed(
-  () => props.sessionsByDate[selectedDate.value] ?? [],
+  () => detailsStore.sessionsByDate[selectedDate.value] ?? [],
 );
 
 const totalSessions = computed(() =>
   availableDates.value.reduce(
     (total, date) =>
       total +
-      (props.sessionsByDate[date] ?? []).reduce(
+      (detailsStore.sessionsByDate[date] ?? []).reduce(
         (sum, group) => sum + group.sessions.length,
         0,
       ),
@@ -66,5 +87,10 @@ const totalSessions = computed(() =>
 <style lang="scss" scoped>
 .sessions-info {
   width: 70%;
+
+  .no-sessions {
+    margin-top: 20px;
+    color: var(--color-red);
+  }
 }
 </style>
