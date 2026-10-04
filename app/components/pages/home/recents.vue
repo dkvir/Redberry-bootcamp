@@ -1,5 +1,5 @@
 <template>
-  <div v-if="recentsStore.movies.length > 0" class="recents flex-column">
+  <section v-if="recentsStore.movies.length > 0" class="recents flex-column">
     <h1 class="label f-h1">Recently viewed</h1>
 
     <ul class="list flex-start align-center">
@@ -23,7 +23,7 @@
         </NuxtLink>
       </li>
     </ul>
-  </div>
+  </section>
 </template>
 
 <script setup>

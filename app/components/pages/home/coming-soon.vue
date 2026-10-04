@@ -1,5 +1,5 @@
 <template>
-  <div class="coming-soon flex-column">
+  <section class="coming-soon flex-column">
     <pages-home-tiny-section-header title="coming soon..." />
 
     <ul class="list flex-center justify-start">
@@ -20,7 +20,10 @@
             <p class="genre f-body-s">
               {{ movie.genres[0].name }} · {{ movie.runtimeMinutes }} mins
             </p>
-            <tiny-chip :label="movie.ageRating.code" red />
+            <tiny-chip
+              :label="movie.ageRating.code"
+              :red="movie.ageRating.code !== 'PG'"
+            />
           </div>
           <tiny-buttons-notify
             :label="notified[movie.slug] ? 'Reminder Set' : 'Notify Me'"
@@ -31,7 +34,7 @@
         </div>
       </li>
     </ul>
-  </div>
+  </section>
 </template>
 
 <script setup>

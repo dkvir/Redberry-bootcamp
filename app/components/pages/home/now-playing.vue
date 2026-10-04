@@ -1,5 +1,5 @@
 <template>
-  <div class="now-playing">
+  <section class="now-playing">
     <pages-home-tiny-section-header title="NOW PLAYING" />
 
     <ul class="list flex-center justify-start">
@@ -20,7 +20,10 @@
             <p class="genre f-body-s">
               {{ movie.genres[0].name }} · {{ movie.runtimeMinutes }} mins
             </p>
-            <tiny-chip :label="movie.ageRating.code" red />
+            <tiny-chip
+              :label="movie.ageRating.code"
+              :red="movie.ageRating.code !== 'PG'"
+            />
             <p class="synopsis f-body-m">
               {{ movie.synopsis }}
             </p>
@@ -32,7 +35,7 @@
         </nuxt-link>
       </li>
     </ul>
-  </div>
+  </section>
 </template>
 
 <script setup>

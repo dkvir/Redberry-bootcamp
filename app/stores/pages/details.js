@@ -28,5 +28,45 @@ export const useDetailsStore = defineStore("detailsStore", () => {
     }
   }
 
-  return { movie, loading, error, notFound, fetchMovie };
+  // sessions
+  const sessionsByDate = ref({});
+  const sessionsLoading = ref(false);
+  const sessionsError = ref(null);
+
+  async function fetchSessions(slug, dates) {
+    sessionsLoading.value = true;
+    sessionsError.value = null;
+    sessionsByDate.value = {};
+
+    try {
+      const responses = await Promise.all(
+        dates.map((date) =>
+          $fetch(`/movies/${slug}/sessions`, {
+            baseURL: config.public.apiBase,
+            query: { date },
+          }),
+        ),
+      );
+
+      sessionsByDate.value = Object.fromEntries(
+        dates.map((date, i) => [date, responses[i].data]),
+      );
+    } catch (e) {
+      sessionsError.value = e?.data?.message ?? "Failed to load sessions";
+    } finally {
+      sessionsLoading.value = false;
+    }
+  }
+
+  return {
+    movie,
+    loading,
+    error,
+    notFound,
+    fetchMovie,
+    sessionsByDate,
+    sessionsLoading,
+    sessionsError,
+    fetchSessions,
+  };
 });

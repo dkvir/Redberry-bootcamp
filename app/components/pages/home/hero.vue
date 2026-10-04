@@ -24,10 +24,13 @@
           />
           <h2 class="title f-display uppercase">{{ movie.title }}</h2>
           <div class="chips flex-center">
-            <tiny-chip :label="movie.ageRating.code" red />
+            <tiny-chip
+              :label="movie.ageRating.code"
+              :red="movie.ageRating.code !== 'PG'"
+            />
 
             <tiny-chip
-              :label="`${movie.ageRating.code} Min`"
+              :label="`${movie.runtimeMinutes} Min`"
               iconName="timer"
             />
 

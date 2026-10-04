@@ -1,6 +1,9 @@
 <template>
   <div class="movie-details-page">
-    {{ detailsStore.movie }}
+    <div v-if="detailsStore.movie" class="movie-details-page">
+      <pages-details-overview :movie="detailsStore.movie" />
+      <pages-details-sessions :movie="detailsStore.movie" />
+    </div>
   </div>
 </template>
 
@@ -40,4 +43,9 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.movie-details-page {
+  width: 100%;
+  min-height: 100vh;
+}
+</style>
