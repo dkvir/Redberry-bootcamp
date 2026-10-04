@@ -41,10 +41,10 @@
           <p class="synopsis f-body-m">{{ movie.synopsis }}</p>
 
           <div class="actions flex-center">
-            <NuxtLink :to="`/movies/${movie.slug}`" class="btn">
+            <NuxtLink :to="`/sessions/${movie.slug}`" class="btn">
               <tiny-buttons-primary label="Buy tickets" icon-label="ticket" />
             </NuxtLink>
-            <NuxtLink :to="`/movies/${movie.slug}`" class="btn">
+            <NuxtLink :to="`/sessions/${movie.slug}`" class="btn">
               <tiny-buttons-transparent label="All sessions" />
             </NuxtLink>
           </div>
@@ -89,7 +89,7 @@ import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
 
-import { useCatalogueStore } from "~/stores/pages/catalogue";
+import { useCatalogueStore } from "~/stores/pages/home/catalogue";
 
 const AUTOPLAY_DELAY = 5000;
 

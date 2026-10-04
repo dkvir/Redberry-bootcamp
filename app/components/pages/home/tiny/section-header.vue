@@ -1,7 +1,7 @@
 <template>
   <div class="section-header f-label-s flex-center justify-between">
     <h1 class="span f-h1 uppercase">{{ title }}</h1>
-    <nuxt-link to="/sesions" class="link f-label-m">See all</nuxt-link>
+    <nuxt-link to="/sessions" class="link f-label-m">See all</nuxt-link>
   </div>
 </template>
 

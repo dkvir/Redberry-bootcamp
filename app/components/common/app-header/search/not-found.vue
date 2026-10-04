@@ -7,7 +7,7 @@
     <p class="sublabel f-body-m">
       Check the spelling or try another film or live event.
     </p>
-    <nuxt-link to="/session" class="sessions-link">
+    <nuxt-link to="/sessions" class="sessions-link">
       <tiny-buttons-transparent label="Browse all sessions" />
     </nuxt-link>
   </div>

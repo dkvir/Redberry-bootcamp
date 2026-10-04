@@ -5,7 +5,7 @@
     </div>
     <p class="label f-label-m">What do you want to watch?</p>
     <p class="sublabel f-body-m">Search by title, director or cast</p>
-    <nuxt-link to="/session" class="sessions-link">
+    <nuxt-link to="/sessions" class="sessions-link">
       <tiny-buttons-transparent label="Browse all sessions" />
     </nuxt-link>
   </div>

@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { useCatalogueStore } from "~/stores/pages/catalogue";
+import { useCatalogueStore } from "~/stores/pages/home/catalogue";
 import { useAuthStore } from "~/stores/common/auth";
 
 const catalogueStore = useCatalogueStore();

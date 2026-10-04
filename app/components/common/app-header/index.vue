@@ -4,7 +4,7 @@
       <nuxt-link class="logo-link" to="/">
         <nuxt-icon name="logo" class="logo-icon" filled />
       </nuxt-link>
-      <nuxt-link class="session-link f-overline" to="/session">
+      <nuxt-link class="session-link f-overline" to="/sessions">
         sessions
       </nuxt-link>
     </div>

@@ -10,7 +10,7 @@
       >
         <nuxt-link
           class="movie-link flex-column justify-between"
-          :to="`/movie/${movie.slug}`"
+          :to="`/sessions/${movie.slug}`"
         >
           <div class="poster">
             <img :src="movie.posterUrl" :alt="movie.title" class="img" />
@@ -27,9 +27,7 @@
           </div>
           <div class="buy-ticket flex-center justify-between">
             <p class="price f-label-s">From ₾{{ movie.fromPrice }}</p>
-            <nuxt-link class="ticket-link" :to="`/movie/${movie.slug}`">
-              <tiny-buttons-primary label="Buy Ticket" />
-            </nuxt-link>
+            <tiny-buttons-primary label="Buy Ticket" />
           </div>
         </nuxt-link>
       </li>
@@ -38,7 +36,7 @@
 </template>
 
 <script setup>
-import { useCatalogueStore } from "~/stores/pages/catalogue";
+import { useCatalogueStore } from "~/stores/pages/home/catalogue";
 
 const catalogueStore = useCatalogueStore();
 

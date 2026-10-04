@@ -1,0 +1,40 @@
+<template>
+  <div class="movie-details-page">
+    {{ detailsStore.movie }}
+  </div>
+</template>
+
+<script setup>
+import { useDetailsStore } from "~/stores/pages/details";
+import { useRecentsStore } from "~/stores/pages/home/recents";
+
+const route = useRoute();
+const detailsStore = useDetailsStore();
+const recentsStore = useRecentsStore();
+
+await useAsyncData(
+  () => `movie-${route.params.slug}`,
+  () => detailsStore.fetchMovie(route.params.slug),
+  { watch: [() => route.params.slug] },
+);
+
+if (detailsStore.notFound) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: "Movie not found",
+    fatal: true,
+  });
+}
+
+onMounted(() => {
+  watch(
+    () => detailsStore.movie,
+    (movie) => {
+      if (movie) recentsStore.add(movie);
+    },
+    { immediate: true },
+  );
+});
+</script>
+
+<style lang="scss" scoped></style>
