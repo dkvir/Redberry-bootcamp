@@ -1,5 +1,5 @@
 const KEY = "recentlyViewedMovies";
-const MAX = 6;
+const MAX = 5;
 
 export const useRecentsStore = defineStore("recentsStore", () => {
   const movies = ref([]);

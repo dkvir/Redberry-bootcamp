@@ -51,34 +51,39 @@ await useAsyncData("now-playing-movies", async () => {
 
 <style lang="scss" scoped>
 .now-playing {
+  position: relative;
   width: 100%;
   margin-top: 32px;
-  padding: 0 70px 40px;
+  padding-bottom: 40px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0px;
+    bottom: 0;
+    width: 250px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--color-bg-page) 80%
+    );
+    pointer-events: none;
+  }
 
   .list {
     --item-gap: 15px;
 
-    position: relative;
+    padding: 0 70px;
     margin-top: 24px;
     width: 100%;
     height: 530px;
-    overflow: hidden;
+    overflow-x: scroll;
     gap: var(--item-gap);
     flex-wrap: nowrap;
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 150px;
-      background: linear-gradient(
-        to right,
-        transparent 0%,
-        var(--color-bg-page) 100%
-      );
-      pointer-events: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 

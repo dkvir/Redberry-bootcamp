@@ -78,30 +78,34 @@ const clickNotify = async (movie) => {
 
 <style lang="scss" scoped>
 .coming-soon {
-  padding: 40px 70px;
+  position: relative;
+  padding: 40px 0;
   border-top: 1px solid var(--color-bg-raised);
   gap: 24px;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0px;
+    bottom: 0;
+    width: 250px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--color-bg-page) 80%
+    );
+    pointer-events: none;
+  }
 
   .list {
-    position: relative;
+    padding: 0 70px;
     width: 100%;
     height: 200px;
-    overflow: hidden;
+    overflow-x: scroll;
     gap: 20px;
-
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 150px;
-      background: linear-gradient(
-        to right,
-        transparent 0%,
-        var(--color-bg-page) 100%
-      );
-      pointer-events: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 

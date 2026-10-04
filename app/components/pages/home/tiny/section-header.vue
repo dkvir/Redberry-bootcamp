@@ -14,6 +14,9 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .section-header {
+  position: relative;
+  z-index: 1;
+  padding: 0 70px;
   .span {
     color: var(--color-text-primary);
   }
