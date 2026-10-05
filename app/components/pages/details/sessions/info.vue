@@ -1,5 +1,5 @@
 <template>
-  <div class="sessions-info">
+  <div :class="['sessions-info', { 'is-disabled': disabled }]">
     <div class="header">
       <h2 class="title f-h2">Sessions</h2>
       <p class="subtitle f-body-s">
@@ -23,12 +23,16 @@
 </template>
 
 <script setup>
-import { useDetailsStore } from "~/stores/pages/details";
+import { useMovieDetailsStore } from "~/stores/pages/details/movie-details";
 
 const props = defineProps({
   movie: {
     type: Object,
     required: true,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -36,7 +40,7 @@ const availableDates = computed(
   () => props.movie?.availableDates.slice(0, 7) ?? [],
 );
 const route = useRoute();
-const detailsStore = useDetailsStore();
+const detailsStore = useMovieDetailsStore();
 
 await useAsyncData(
   () => `movie-sessions-${route.params.slug}`,
@@ -76,7 +80,8 @@ const totalSessions = computed(() =>
     (total, date) =>
       total +
       (detailsStore.sessionsByDate[date] ?? []).reduce(
-        (sum, group) => sum + group.sessions.length,
+        (sum, group) =>
+          sum + group.halls.reduce((n, h) => n + h.sessions.length, 0),
         0,
       ),
     0,
@@ -87,6 +92,16 @@ const totalSessions = computed(() =>
 <style lang="scss" scoped>
 .sessions-info {
   width: 70%;
+
+  &.is-disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+
+    .dates,
+    .venue-list {
+      pointer-events: none;
+    }
+  }
 
   .no-sessions {
     margin-top: 20px;

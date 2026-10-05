@@ -1,4 +1,4 @@
-export const useDetailsStore = defineStore("detailsStore", () => {
+export const useMovieDetailsStore = defineStore("movieDetailsStore", () => {
   const config = useRuntimeConfig();
 
   const movie = ref(null);
@@ -49,13 +49,36 @@ export const useDetailsStore = defineStore("detailsStore", () => {
       );
 
       sessionsByDate.value = Object.fromEntries(
-        dates.map((date, i) => [date, responses[i].data]),
+        dates.map((date, i) => [date, groupByHall(responses[i].data)]),
       );
     } catch (e) {
       sessionsError.value = e?.data?.message ?? "Failed to load sessions";
     } finally {
       sessionsLoading.value = false;
     }
+  }
+
+  function groupByHall(venues) {
+    return venues.map(({ venue, sessions }) => {
+      const halls = new Map();
+
+      for (const session of sessions) {
+        if (!halls.has(session.hall.id)) {
+          halls.set(session.hall.id, { hall: session.hall, sessions: [] });
+        }
+        halls.get(session.hall.id).sessions.push(session);
+      }
+
+      return {
+        venue,
+        halls: [...halls.values()].map((h) => ({
+          ...h,
+          sessions: h.sessions.sort((a, b) =>
+            a.startsAt.localeCompare(b.startsAt),
+          ),
+        })),
+      };
+    });
   }
 
   return {

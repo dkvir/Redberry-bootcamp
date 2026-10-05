@@ -36,7 +36,11 @@ onClickOutside(contentRef, () => {
 watch(
   () => authStore.isOpen,
   (isOpen) => {
-    document.documentElement.style.overflow = isOpen ? "hidden" : "";
+    if (isOpen) {
+      useScroll().stopScroll();
+    } else {
+      useScroll().startScroll();
+    }
   },
 );
 

@@ -82,6 +82,22 @@ export const useAuthStore = defineStore("authStore", () => {
     }
   };
 
+  const age = computed(() => {
+    const dob = user.value?.dateOfBirth;
+    if (!dob) return null;
+
+    const birth = new Date(dob);
+    if (isNaN(birth)) return null;
+
+    const now = new Date();
+    let years = now.getFullYear() - birth.getFullYear();
+    const monthDiff = now.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birth.getDate())) {
+      years--;
+    }
+    return years;
+  });
+
   return {
     isOpen,
     activeState,
@@ -96,5 +112,6 @@ export const useAuthStore = defineStore("authStore", () => {
     fetchMe,
     logout,
     call,
+    age,
   };
 });
