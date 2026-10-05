@@ -17,6 +17,7 @@ export function useForm(initial, rules) {
 
   const touch = (k) => (touched[k] = true);
   const touchAll = () => keys.forEach((k) => (touched[k] = true));
+  const untouchAll = () => keys.forEach((k) => (touched[k] = false));
 
   const setServerErrors = (errs = {}, map = {}) => {
     const leftover = [];
@@ -51,6 +52,7 @@ export function useForm(initial, rules) {
     isValid,
     touch,
     touchAll,
+    untouchAll,
     setServerErrors,
     reset,
   };

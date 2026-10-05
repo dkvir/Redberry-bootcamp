@@ -6,24 +6,25 @@
     </div>
     <div class="scrollable-section">
       <ul class="list">
-        <li
-          v-for="(movie, index) in results"
-          :key="index"
-          class="movie flex-center justify-between"
-        >
-          <div class="poster">
-            <img :src="movie.posterUrl" :alt="movie.title" class="img" />
-          </div>
-          <div class="info">
-            <div class="info-left">
-              <p class="title f-label-m">{{ movie.title }}</p>
-              <p class="duration f-body-s">
-                Film · {{ movie.ageRating.code }} ·
-                {{ movie.runtimeMinutes }} min
-              </p>
+        <li v-for="(movie, index) in results" :key="index" class="movie">
+          <NuxtLink
+            :to="`/sessions/${movie.slug}`"
+            class="result-link flex-center justify-between"
+          >
+            <div class="poster">
+              <img :src="movie.posterUrl" :alt="movie.title" class="img" />
             </div>
-            <p class="price f-label-m">from ₾{{ movie.fromPrice }}</p>
-          </div>
+            <div class="info">
+              <div class="info-left">
+                <p class="title f-label-m">{{ movie.title }}</p>
+                <p class="duration f-body-s">
+                  Film · {{ movie.ageRating.code }} ·
+                  {{ movie.runtimeMinutes }} min
+                </p>
+              </div>
+              <p class="price f-label-m">from ₾{{ movie.fromPrice }}</p>
+            </div>
+          </NuxtLink>
         </li>
       </ul>
     </div>
@@ -70,17 +71,19 @@ const props = defineProps({
   }
 
   .movie {
-    padding: 8px 10px;
-    gap: 14px;
     width: 100%;
     height: var(--item-height);
-    background-color: var(--movie-bg, transparent);
-    cursor: pointer;
-    border-radius: 10px;
-    @include default-transitions(background-color);
 
-    &:hover {
-      --movie-bg: var(--color-bg-raised);
+    .result-link {
+      gap: 14px;
+      padding: 8px 10px;
+      @include size(100%);
+      background-color: var(--movie-bg, transparent);
+      border-radius: 10px;
+      @include default-transitions(background-color);
+      &:hover {
+        --movie-bg: var(--color-bg-raised);
+      }
     }
 
     .poster {
@@ -111,6 +114,9 @@ const props = defineProps({
         .duration {
           color: var(--color-text-secondary);
         }
+      }
+      .price {
+        color: var(--color-text-primary);
       }
     }
   }

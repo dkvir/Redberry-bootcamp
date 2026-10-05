@@ -40,7 +40,7 @@
 <script setup>
 const props = defineProps({
   theater: {
-    type: Array,
+    type: Object,
     required: true,
   },
 });

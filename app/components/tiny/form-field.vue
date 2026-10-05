@@ -10,14 +10,17 @@
 
     <div class="control">
       <input
+        ref="input"
         :id="id"
         v-model="model"
         class="input f-label-s"
+        :class="{ 'is-date': type === 'date' }"
         :type="type"
         :placeholder="placeholder"
         :aria-invalid="!!error"
         :aria-describedby="error ? `${id}-error` : undefined"
         v-bind="$attrs"
+        @click="type === 'date' && openPicker()"
       />
 
       <nuxt-icon v-if="error" name="alert" class="icon" aria-hidden="true" />
@@ -26,6 +29,14 @@
         name="check"
         class="icon"
         aria-hidden="true"
+      />
+      <nuxt-icon
+        v-else-if="type === 'date'"
+        name="picker"
+        class="icon picker"
+        aria-hidden="true"
+        @click="openPicker"
+        filled
       />
     </div>
 
@@ -60,10 +71,11 @@ const props = defineProps({
     default: false,
   },
 });
-
+const input = ref(null);
 const model = defineModel({ type: String, default: "" });
-
 const id = useId();
+
+const openPicker = () => input.value?.showPicker?.();
 </script>
 
 <style lang="scss" scoped>
@@ -112,6 +124,10 @@ const id = useId();
       color: var(--color-text-disabled);
       cursor: not-allowed;
     }
+
+    &::-webkit-calendar-picker-indicator {
+      display: none;
+    }
   }
 
   .icon {
@@ -121,6 +137,12 @@ const id = useId();
     transform: translateY(-50%);
     font-size: 20px;
     pointer-events: none;
+
+    &.picker {
+      color: var(--color-text-secondary);
+      pointer-events: auto;
+      cursor: pointer;
+    }
   }
 
   .error {
