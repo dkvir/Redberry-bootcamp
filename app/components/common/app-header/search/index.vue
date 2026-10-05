@@ -44,6 +44,8 @@ const store = useSearchStore();
 const { term, results, isVisible, showFocused, showResults, showNotFound } =
   storeToRefs(store);
 
+const route = useRoute();
+
 const inputRef = ref(null);
 const searchRef = ref(null);
 
@@ -53,6 +55,14 @@ function onClear() {
   store.clear();
   inputRef.value?.focus();
 }
+
+watch(
+  () => route.fullPath,
+  () => {
+    store.clear();
+    store.close();
+  },
+);
 </script>
 
 <style lang="scss" scoped>

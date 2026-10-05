@@ -30,6 +30,7 @@ import { onClickOutside } from "@vueuse/core";
 import auth from "~/plugins/auth";
 
 const authStore = useAuthStore();
+const route = useRoute();
 
 const fullInfoVisible = ref(false);
 const profileRef = ref(null);
@@ -39,6 +40,13 @@ onClickOutside(profileRef, () => (fullInfoVisible.value = false));
 const clickSmallInfo = () => {
   fullInfoVisible.value = !fullInfoVisible.value;
 };
+
+watch(
+  () => route.fullPath,
+  () => {
+    fullInfoVisible.value = false;
+  },
+);
 </script>
 
 <style lang="scss" scoped>
