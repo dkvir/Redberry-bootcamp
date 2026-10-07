@@ -1,10 +1,8 @@
 <template>
-  <div
-    :class="['buy-ticket flex-center', { 'is-visible': buyTicketStore.isOpen }]"
-  >
+  <div class="buy-ticket flex-center">
     <div class="bg-blur"></div>
 
-    <div class="content flex-column">
+    <div ref="contentRef" class="content flex-column">
       <pages-details-buy-ticket-modal-header
         v-if="buyTicketStore.selectedSession"
         :movie="movie"
@@ -15,12 +13,9 @@
           <pages-details-buy-ticket-segments
             :activeStep="buyTicketStore.activeStep"
           />
-          <pages-details-buy-ticket-step-one
-            v-if="buyTicketStore.seatMap"
-            :seatMap="buyTicketStore.seatMap"
-          />
+          <pages-details-buy-ticket-step-one />
         </div>
-        <div class="tickets-info"></div>
+        <pages-details-buy-ticket-info :movie="movie" />
       </div>
     </div>
   </div>
@@ -28,6 +23,7 @@
 
 <script setup>
 import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket";
+import { onClickOutside } from "@vueuse/core";
 
 const props = defineProps({
   movie: {
@@ -35,20 +31,14 @@ const props = defineProps({
     required: true,
   },
 });
-
 const buyTicketStore = useBuyTicketStore();
 
-watch(
-  () => buyTicketStore.isOpen,
-  (isOpen) => {
-    if (isOpen) {
-      useScroll().stopScroll();
-      buyTicketStore.fetchSeats();
-    } else {
-      useScroll().startScroll();
-    }
-  },
-);
+const { stopScroll, startScroll } = useScroll();
+const contentRef = ref(null);
+
+onMounted(stopScroll);
+onBeforeUnmount(startScroll);
+onClickOutside(contentRef, () => buyTicketStore.close());
 </script>
 
 <style lang="scss" scoped>
@@ -56,23 +46,13 @@ watch(
   position: fixed;
   inset: 0;
   z-index: 9;
-  pointer-events: none;
-  transition-duration: 0.15s;
-
-  &.is-visible {
-    --content-opacity: 1;
-    --bg-blur: 10px;
-    --bg-color: var(--color-chaos);
-    pointer-events: auto;
-  }
 
   .bg-blur {
     position: absolute;
     inset: 0;
-    background-color: var(--bg-color, transparent);
-    backdrop-filter: blur(var(--bg-blur, 0px));
+    background-color: var(--color-chaos);
+    backdrop-filter: blur(10px);
     z-index: -1;
-    @include default-transitions(backdrop-filter, background-color);
   }
 
   .content {
@@ -83,8 +63,6 @@ watch(
     border-radius: 28px;
     border: 1px solid var(--color-text-disabled);
     background-color: var(--color-bg-page);
-    opacity: var(--content-opacity, 0);
-    @include default-transitions(opacity);
   }
 
   .content-frame {
@@ -92,13 +70,15 @@ watch(
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: auto 341px;
+    grid-template-columns: auto 365px;
 
     .steps {
       min-width: 0;
       height: 100%;
       padding-right: 20px;
       border-right: 1px solid var(--color-bg-card);
+      min-width: 720px;
+      min-height: 625px;
     }
 
     .tickets-info {

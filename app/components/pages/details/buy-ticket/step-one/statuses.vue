@@ -23,6 +23,7 @@
 
 <style lang="scss" scoped>
 .statuses {
+  margin-top: 32px;
   gap: 24px;
 
   .status {

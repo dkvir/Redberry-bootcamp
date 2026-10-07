@@ -7,8 +7,18 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
 
   const authStore = useAuthStore();
 
-  const toggleVisibility = (state) => {
-    isOpen.value = state;
+  const open = async (session) => {
+    selectedSession.value = session;
+    selectedSeats.value = [];
+    seatMap.value = null;
+    activeStep.value = 1;
+    isOpen.value = true;
+
+    await fetchSeats();
+  };
+
+  const close = () => {
+    isOpen.value = false;
   };
 
   const moveToSecondStep = () => {
@@ -29,14 +39,15 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
   let alertTimer = null;
 
   const fetchSeats = async () => {
-    if (!selectedSession.value) return;
+    const session = selectedSession.value;
+    if (!session) return;
 
     seatsLoading.value = true;
     try {
-      const res = await authStore.call(
-        `/sessions/${selectedSession.value.id}/seats`,
-      );
-      seatMap.value = res.data;
+      const res = await authStore.call(`/sessions/${session.id}/seats`);
+      if (selectedSession.value?.id === session.id) {
+        seatMap.value = res.data;
+      }
     } finally {
       seatsLoading.value = false;
     }
@@ -45,7 +56,7 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
   const toggleSelectedSeat = (seat) => {
     if (seat.state !== "available") return;
 
-    const index = selectedSeats.value.findIndex((s) => s.id === seat.id);
+    const index = selectedSeats.value.findIndex((s) => s.seat.id === seat.id);
 
     if (index !== -1) {
       selectedSeats.value.splice(index, 1);
@@ -57,7 +68,12 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
       return;
     }
 
-    selectedSeats.value.push(seat);
+    selectedSeats.value.push({ seat, ticketType: "adult" });
+  };
+
+  const setTicketType = (id, type) => {
+    const entry = selectedSeats.value.find((s) => s.seat.id === id);
+    if (entry) entry.ticketType = type;
   };
 
   const showLimitAlert = () => {
@@ -65,13 +81,14 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
     clearTimeout(alertTimer);
     alertTimer = setTimeout(() => {
       alertVisibility.value = false;
-    }, 1000);
+    }, 1500);
   };
 
   return {
     isOpen,
+    open,
+    close,
     selectedSession,
-    toggleVisibility,
     setSession,
     activeStep,
     moveToSecondStep,
@@ -81,5 +98,6 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
     selectedSeats,
     alertVisibility,
     toggleSelectedSeat,
+    setTicketType,
   };
 });

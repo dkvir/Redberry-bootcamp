@@ -15,7 +15,10 @@
         <pages-details-sessions-movie-details :movie="detailsStore.movie" />
       </section>
 
-      <pages-details-buy-ticket :movie="detailsStore.movie" />
+      <pages-details-buy-ticket
+        v-if="buyTicketStore.isOpen"
+        :movie="detailsStore.movie"
+      />
     </div>
   </div>
 </template>
@@ -24,11 +27,13 @@
 import { useMovieDetailsStore } from "~/stores/pages/details/movie-details";
 import { useRecentsStore } from "~/stores/pages/home/recents";
 import { useAuthStore } from "~/stores/common/auth";
+import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket";
 
 const route = useRoute();
 const detailsStore = useMovieDetailsStore();
 const recentsStore = useRecentsStore();
 const authStore = useAuthStore();
+const buyTicketStore = useBuyTicketStore();
 
 await useAsyncData(
   () => `movie-${route.params.slug}`,

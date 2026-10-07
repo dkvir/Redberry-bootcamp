@@ -44,7 +44,7 @@ const authStore = useAuthStore();
 const openBuyTicket = (session) => {
   const openModal = () => {
     buyTicketStore.setSession(session);
-    buyTicketStore.toggleVisibility(true);
+    buyTicketStore.open(session);
   };
 
   if (authStore.isLoggedIn) openModal();

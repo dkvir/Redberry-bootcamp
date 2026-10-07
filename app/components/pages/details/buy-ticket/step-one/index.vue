@@ -11,64 +11,68 @@
     >
       Maximum 3 seats is available to buy from one account
     </p>
-    <VueZoomable
-      style="width: 720px; height: 400px; border: 1px solid black"
-      selector="#section-list"
-      :minZoom="0.7"
-      :maxZoom="2"
-      :dblClickZoomStep="0.4"
-      :wheelZoomStep="0.05"
-      v-model:pan="pan"
-      v-model:zoom="zoom"
-    >
-      <ul class="sections-list flex-column" id="section-list">
-        <li
-          v-for="(section, index) in seatMap.sections"
-          :key="index"
-          class="section flex-column"
-        >
-          <h2 class="name uppercase f-label-s">
-            {{ section.name }} · ROWS {{ section.rows[0].label }}-{{
-              section.rows[section.rows.length - 1].label
-            }}
-          </h2>
+    <div class="panzoom-frame">
+      <VueZoomable
+        v-if="buyTicketStore.seatMap"
+        style="width: 720px; height: 400px; border: 1px solid black"
+        selector="#section-list"
+        :minZoom="0.7"
+        :maxZoom="2"
+        :dblClickZoomStep="0.4"
+        :wheelZoomStep="0.05"
+        v-model:pan="pan"
+        v-model:zoom="zoom"
+      >
+        <ul class="sections-list flex-column" id="section-list">
+          <li
+            v-for="(section, index) in buyTicketStore.seatMap.sections"
+            :key="index"
+            class="section flex-column"
+          >
+            <h2 class="name uppercase f-label-s">
+              {{ section.name }} · ROWS {{ section.rows[0].label }}-{{
+                section.rows[section.rows.length - 1].label
+              }}
+            </h2>
 
-          <ul class="rows flex-column">
-            <li
-              v-for="row in section.rows"
-              :key="row.label"
-              class="row flex-center"
-            >
-              <div class="label f-label-s">{{ row.label }}</div>
+            <ul class="rows flex-column">
+              <li
+                v-for="row in section.rows"
+                :key="row.label"
+                class="row flex-center"
+              >
+                <div class="label f-label-s">{{ row.label }}</div>
 
-              <ul class="seats flex-center">
-                <li
-                  v-for="seat in row.seats"
-                  :key="seat.id"
-                  @click="buyTicketStore.toggleSelectedSeat(seat)"
-                  :class="[
-                    'seat flex-center f-button',
-                    `is-${seat.state}`,
-                    {
-                      'has-aisle': seat.aisleAfter,
-                      'is-active': buyTicketStore.selectedSeats.some(
-                        (s) => s.id === seat.id,
-                      ),
-                    },
-                  ]"
-                >
-                  <span v-if="seat.state !== 'unavailable'" class="span">
-                    {{ seat.label }}
-                  </span>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </VueZoomable>
+                <ul class="seats flex-center">
+                  <li
+                    v-for="seat in row.seats"
+                    :key="seat.id"
+                    @click="buyTicketStore.toggleSelectedSeat(seat)"
+                    :class="[
+                      'seat flex-center f-button',
+                      `is-${seat.state}`,
+                      {
+                        'has-aisle': seat.aisleAfter,
+                        'is-active':
+                          buyTicketStore.selectedSeats.some(
+                            (s) => s.seat.id === seat.id,
+                          ) || seat.isMine,
+                      },
+                    ]"
+                  >
+                    <span v-if="seat.state !== 'unavailable'" class="span">
+                      {{ seat.label }}
+                    </span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </VueZoomable>
+    </div>
 
-    <pages-details-buy-ticket-statuses />
+    <pages-details-buy-ticket-step-one-statuses />
   </div>
 </template>
 
@@ -77,13 +81,6 @@ import VueZoomable from "vue-zoomable";
 import "vue-zoomable/dist/style.css";
 
 import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket";
-
-const props = defineProps({
-  seatMap: {
-    type: Object,
-    required: true,
-  },
-});
 
 const zoom = ref(1);
 const pan = ref({ x: 10, y: 10 });
@@ -95,7 +92,6 @@ const buyTicketStore = useBuyTicketStore();
 .step-one {
   width: 100%;
   margin: 35px 0;
-  min-width: 0;
 
   .alert {
     color: var(--color-red);
@@ -119,10 +115,17 @@ const buyTicketStore = useBuyTicketStore();
     border-bottom-right-radius: 20px;
   }
 
+  .panzoom-frame {
+    border: 1px solid var(--color-bg-card);
+    border-radius: 10px;
+    width: 720px;
+    height: 400px;
+  }
+
   :deep(._container_irdvc_2) {
     align-items: flex-start;
     justify-content: flex-start;
-    border: 1px solid var(--color-bg-card) !important;
+    border: 1px solid transparent !important;
     border-radius: 10px;
   }
 
@@ -172,7 +175,8 @@ const buyTicketStore = useBuyTicketStore();
         --seat-border: var(--color-red);
       }
     }
-    &.is-active {
+    &.is-active,
+    &.is-mine {
       --seat-bg: var(--color-red);
       --seat-border: var(--color-red);
     }
