@@ -5,7 +5,6 @@
     <div ref="contentRef" class="content flex-column">
       <pages-details-buy-ticket-modal-header
         v-if="buyTicketStore.selectedSession"
-        :movie="movie"
         :session="buyTicketStore.selectedSession"
       />
       <div class="content-frame flex-center justify-between">
@@ -15,22 +14,16 @@
           />
           <pages-details-buy-ticket-step-one />
         </div>
-        <pages-details-buy-ticket-info :movie="movie" />
+        <pages-details-buy-ticket-selected />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket";
+import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket/index";
 import { onClickOutside } from "@vueuse/core";
 
-const props = defineProps({
-  movie: {
-    type: Object,
-    required: true,
-  },
-});
 const buyTicketStore = useBuyTicketStore();
 
 const { stopScroll, startScroll } = useScroll();

@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket";
+import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket/index";
 import { useAuthStore } from "~/stores/common/auth";
 
 const props = defineProps({

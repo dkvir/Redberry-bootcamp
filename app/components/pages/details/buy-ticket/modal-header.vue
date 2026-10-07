@@ -1,7 +1,7 @@
 <template>
   <div class="modal-header flex-center justify-between">
     <div class="left-wrapper">
-      <h2 class="title f-h2">{{ movie.title }}</h2>
+      <h2 class="title f-h2">{{ seatStore.movie.title }}</h2>
       <p class="subtitle f-body-s">
         {{ session.venue.name }} · Hall {{ session.hall.name }} ·
         {{ formatDate(session.date) }} · {{ session.time }} ·
@@ -24,13 +24,10 @@
 </template>
 
 <script setup>
-import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket";
+import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket/index";
+import { useSeatsStore } from "~/stores/pages/details/buy-ticket/seats";
 
 const props = defineProps({
-  movie: {
-    type: Object,
-    required: true,
-  },
   session: {
     type: Object,
     required: true,
@@ -38,6 +35,7 @@ const props = defineProps({
 });
 
 const buyTicketStore = useBuyTicketStore();
+const seatStore = useSeatsStore();
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-GB", {

@@ -15,10 +15,7 @@
         <pages-details-sessions-movie-details :movie="detailsStore.movie" />
       </section>
 
-      <pages-details-buy-ticket
-        v-if="buyTicketStore.isOpen"
-        :movie="detailsStore.movie"
-      />
+      <pages-details-buy-ticket v-if="buyTicketStore.isOpen" />
     </div>
   </div>
 </template>
@@ -27,7 +24,7 @@
 import { useMovieDetailsStore } from "~/stores/pages/details/movie-details";
 import { useRecentsStore } from "~/stores/pages/home/recents";
 import { useAuthStore } from "~/stores/common/auth";
-import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket";
+import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket/index";
 
 const route = useRoute();
 const detailsStore = useMovieDetailsStore();
