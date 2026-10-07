@@ -15,7 +15,7 @@
         <pages-details-sessions-movie-details :movie="detailsStore.movie" />
       </section>
 
-      <pages-details-buy-ticket />
+      <pages-details-buy-ticket :movie="detailsStore.movie" />
     </div>
   </div>
 </template>
