@@ -71,7 +71,8 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
     selectedSeats.value.push({ seat, ticketType: "adult" });
   };
 
-  const setTicketType = (id, type) => {
+  const setTicketType = (id, type, minAge) => {
+    if (type == "child" && minAge <= 16) return;
     const entry = selectedSeats.value.find((s) => s.seat.id === id);
     if (entry) entry.ticketType = type;
   };

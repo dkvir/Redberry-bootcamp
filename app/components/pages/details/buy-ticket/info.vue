@@ -34,9 +34,19 @@
               :key="type.key"
               :class="[
                 'f-body-s flex-center button',
-                { 'is-active': item.ticketType === type.key },
+                {
+                  'is-active': item.ticketType === type.key,
+                  'is-disabled':
+                    type.key == 'child' && movie.ageRating.minAge <= 16,
+                },
               ]"
-              @click="buyTicketStore.setTicketType(item.seat.id, type.key)"
+              @click="
+                buyTicketStore.setTicketType(
+                  item.seat.id,
+                  type.key,
+                  movie.ageRating.minAge,
+                )
+              "
             >
               {{ type.label }} {{ type.rate * 100 }}%
             </button>
@@ -159,12 +169,18 @@ const total = computed(
         @include default-transitions(background-color, border);
         cursor: pointer;
 
-        &:not(.is-active):hover {
+        &:not(.is-active):not(.is-disabled):hover {
           --button-border: var(--color-text-disabled);
         }
 
         &.is-active {
           --button-color: var(--color-red);
+        }
+
+        &.is-disabled {
+          --button-color: var(--color-chaos);
+          color: var(--color-text-disabled);
+          cursor: not-allowed;
         }
       }
     }
