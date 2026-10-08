@@ -17,10 +17,12 @@
             />
             <pages-details-buy-ticket-step-two v-else />
           </div>
+
           <pages-details-buy-ticket-selected />
         </div>
       </div>
-      <div v-else class="order-confirmation">confirm</div>
+
+      <pages-details-buy-ticket-step-three v-else />
     </div>
   </div>
 </template>
@@ -35,7 +37,12 @@ const { stopScroll, startScroll } = useScroll();
 const contentRef = ref(null);
 
 onMounted(stopScroll);
-onBeforeUnmount(startScroll);
+onBeforeUnmount(() => {
+  startScroll();
+
+  buyTicketStore.close();
+});
+
 onClickOutside(contentRef, () => buyTicketStore.close());
 </script>
 

@@ -9,11 +9,11 @@
     </div>
     <div class="seats info-box flex-center justify-between">
       <div class="label f-body-s">Seats</div>
-      <div class="value">{{ seatCodes }}</div>
+      <div class="value f-label-s">{{ seatCodes }}</div>
     </div>
     <div class="tickets info-box flex-center justify-between">
       <div class="label f-body-s">Tickets</div>
-      <div class="value">{{ ticketsSummary }}</div>
+      <div class="value f-body-s">{{ ticketsSummary }}</div>
     </div>
   </div>
 </template>

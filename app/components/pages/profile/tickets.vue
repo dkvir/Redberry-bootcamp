@@ -1,7 +1,5 @@
 <template>
-  <div class="tickets">
-    {{ tickets }}
-  </div>
+  <div class="tickets"></div>
 </template>
 
 <script setup>
