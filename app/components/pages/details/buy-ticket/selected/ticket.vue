@@ -1,5 +1,5 @@
 <template>
-  <div class="selected-ticket">
+  <div :class="['selected-ticket', { 'is-disabled': item.seat.isMine }]">
     <div class="header flex-center justify-between">
       <div class="seat flex-center">
         <div class="label f-body-s">Seat</div>
@@ -8,6 +8,7 @@
       <div class="price flex-center">
         <div class="value f-label-s">₾ {{ seatsStore.seatPrice(item) }}</div>
         <button
+          v-if="!item.seat.isMine"
           type="button"
           class="remove-btn flex-center"
           aria-label="Remove seat"
@@ -54,6 +55,11 @@ const seatsStore = useSeatsStore();
   padding: 15px;
   background-color: var(--color-bg-card);
   border-radius: 16px;
+
+  &.is-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
 
   .header {
     padding-bottom: 12px;

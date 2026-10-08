@@ -1,21 +1,19 @@
 <template>
   <div class="selected-tickets flex-column justify-between">
-    <div class="label f-button">Your seats · Max 3</div>
+    <div class="label f-button">
+      {{ buyTicketStore.activeStep == 1 ? " Your seats · Max 3" : "Summary" }}
+    </div>
     <div class="selected-tickets-frame">
-      <ul v-if="seatsStore.selectedSeats.length > 0" class="list flex-column">
-        <li
-          v-for="item in seatsStore.selectedSeats"
-          :key="item.seat.id"
-          class="item"
-        >
-          <pages-details-buy-ticket-selected-ticket :item="item" />
-        </li>
-      </ul>
-
-      <div v-else class="pick-text f-body-s">
-        Pick up to 3 seats from the map. Each seat can carry its own ticket
-        type.
-      </div>
+      <pages-details-buy-ticket-selected-list
+        v-if="buyTicketStore.activeStep == 1"
+        :selectedSeats="seatsStore.selectedSeats"
+      />
+      <pages-details-buy-ticket-selected-summary
+        v-else
+        :session="buyTicketStore.selectedSession"
+        :title="seatsStore.movie?.title"
+        :selectedSeats="seatsStore.selectedSeats"
+      />
     </div>
     <div class="checkout flex-column">
       <div class="calculator flex-center justify-between">
@@ -23,24 +21,35 @@
         <div class="bill">₾ {{ seatsStore.total }}</div>
       </div>
       <tiny-buttons-primary
-        @click="buyTicketStore.moveToSecondStep()"
-        label="Next: Checkout"
-        :disabled="
-          seatsStore.selectedSeats.length === 0 || holdStore.holdLoading
+        :label="
+          buyTicketStore.activeStep === 1
+            ? 'Next: Checkout'
+            : 'Pay: Complete order'
         "
+        :disabled="
+          seatsStore.selectedSeats.length === 0 ||
+          holdStore.holdLoading ||
+          buyTicketStore.orderLoading
+        "
+        @click="handleClick"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket/index";
 import { useSeatsStore } from "~/stores/pages/details/buy-ticket/seats";
 import { useHoldStore } from "~/stores/pages/details/buy-ticket/hold";
+import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket/index";
 
-const buyTicketStore = useBuyTicketStore();
 const seatsStore = useSeatsStore();
 const holdStore = useHoldStore();
+const buyTicketStore = useBuyTicketStore();
+
+const handleClick = () => {
+  if (buyTicketStore.activeStep === 1) buyTicketStore.moveToSecondStep();
+  else if (buyTicketStore.activeStep === 2) buyTicketStore.submitStepTwo();
+};
 </script>
 
 <style lang="scss" scoped>
@@ -54,14 +63,6 @@ const holdStore = useHoldStore();
   .selected-tickets-frame {
     flex: 1;
     margin-top: 12px;
-
-    .list {
-      gap: 12px;
-    }
-
-    .pick-text {
-      color: var(--color-text-secondary);
-    }
   }
 
   .checkout {

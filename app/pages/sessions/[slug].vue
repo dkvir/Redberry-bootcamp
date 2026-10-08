@@ -50,6 +50,8 @@ if (detailsStore.notFound) {
 }
 
 const canBuy = computed(() => {
+  if (!authStore.isLoggedIn) return true;
+
   const minAge = detailsStore.movie?.ageRating?.minAge ?? 0;
   if (!minAge) return true;
 

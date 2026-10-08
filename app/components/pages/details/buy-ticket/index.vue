@@ -2,20 +2,25 @@
   <div class="buy-ticket flex-center">
     <div class="bg-blur"></div>
 
-    <div ref="contentRef" class="content flex-column">
-      <pages-details-buy-ticket-modal-header
-        v-if="buyTicketStore.selectedSession"
-        :session="buyTicketStore.selectedSession"
-      />
-      <div class="content-frame flex-center justify-between">
-        <div class="steps">
-          <pages-details-buy-ticket-segments
-            :activeStep="buyTicketStore.activeStep"
-          />
-          <pages-details-buy-ticket-step-one />
+    <div ref="contentRef" class="content">
+      <div v-if="buyTicketStore.activeStep <= 2" class="book-seats flex-column">
+        <pages-details-buy-ticket-modal-header
+          v-if="buyTicketStore.selectedSession"
+        />
+        <div class="content-frame flex-center justify-between">
+          <div class="steps">
+            <pages-details-buy-ticket-segments
+              :activeStep="buyTicketStore.activeStep"
+            />
+            <pages-details-buy-ticket-step-one
+              v-if="buyTicketStore.activeStep == 1"
+            />
+            <pages-details-buy-ticket-step-two v-else />
+          </div>
+          <pages-details-buy-ticket-selected />
         </div>
-        <pages-details-buy-ticket-selected />
       </div>
+      <div v-else class="order-confirmation">confirm</div>
     </div>
   </div>
 </template>
@@ -50,12 +55,15 @@ onClickOutside(contentRef, () => buyTicketStore.close());
 
   .content {
     padding: 32px;
-    gap: 32px;
     min-width: 1146px;
     min-height: 600px;
     border-radius: 28px;
     border: 1px solid var(--color-text-disabled);
     background-color: var(--color-bg-page);
+  }
+
+  .book-seats {
+    gap: 32px;
   }
 
   .content-frame {

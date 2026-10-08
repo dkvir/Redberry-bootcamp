@@ -41,13 +41,16 @@ export const useSeatsStore = defineStore("buyTicketSeatsStore", () => {
   };
 
   const toggleSelectedSeat = (seat) => {
-    if (seat.state !== "available") return;
+    if (seat.isMine) return false;
 
     const index = selectedSeats.value.findIndex((s) => s.seat.id === seat.id);
+
     if (index !== -1) {
       selectedSeats.value.splice(index, 1);
       return;
     }
+
+    if (seat.state !== "available" && !seat.isMine) return;
 
     if (selectedSeats.value.length >= 3) {
       showLimitAlert();
@@ -55,6 +58,25 @@ export const useSeatsStore = defineStore("buyTicketSeatsStore", () => {
     }
 
     selectedSeats.value.push({ seat, ticketType: "adult" });
+  };
+
+  const applyHeld = (heldSeats) => {
+    const byId = new Map();
+    const walk = (node) => {
+      if (Array.isArray(node)) return node.forEach(walk);
+      if (node && typeof node === "object") {
+        if (node.id != null && "code" in node && "state" in node) {
+          byId.set(node.id, node);
+        }
+        Object.values(node).forEach(walk);
+      }
+    };
+    walk(seatMap.value);
+
+    selectedSeats.value = heldSeats.map((h) => ({
+      seat: byId.get(h.seatId) ?? { id: h.seatId, code: h.code, state: "held" },
+      ticketType: h.ticketType.slug,
+    }));
   };
 
   const seatPrice = (item) =>
@@ -113,6 +135,7 @@ export const useSeatsStore = defineStore("buyTicketSeatsStore", () => {
     alertVisibility,
     fetchSeats,
     toggleSelectedSeat,
+    applyHeld,
     setTicketType,
     releaseContested,
     clearSelection,

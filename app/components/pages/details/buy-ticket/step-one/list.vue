@@ -19,7 +19,7 @@
         >
           <div class="label f-label-s">{{ row.label }}</div>
 
-          <ul class="seats flex-center">
+          <ul class="seats flex align-center">
             <li
               v-for="seat in row.seats"
               :key="seat.id"
@@ -87,6 +87,8 @@ const seatsStore = useSeatsStore();
   .seat {
     flex: 1 1 0;
     @include size(52px);
+    max-width: 52px;
+    max-height: 52px;
     border-radius: 10px;
     border: 1px solid var(--seat-border, var(--color-text-disabled));
     background-color: var(--seat-bg, var(--color-bg-card));

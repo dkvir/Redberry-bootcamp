@@ -5,13 +5,16 @@
       :class="[
         'alert f-button',
         {
-          'is-visible': seatsStore.alertVisibility,
+          'is-visible': seatsStore.alertVisibility || !!holdMessage,
         },
       ]"
     >
-      Maximum 3 seats is available to buy from one account
+      <span v-if="seatsStore.alertVisibility" class="span">
+        Maximum 3 seats is available to buy from one account
+      </span>
+      <span v-else-if="holdMessage" class="span">{{ holdMessage }}</span>
     </p>
-    <div class="panzoom-frame">
+    <div :class="['panzoom-frame', { 'is-disabled': holdStore?.hold?.holdId }]">
       <VueZoomable
         v-if="seatsStore.seatMap"
         style="width: 720px; height: 400px; border: 1px solid black"
@@ -36,11 +39,17 @@ import VueZoomable from "vue-zoomable";
 import "vue-zoomable/dist/style.css";
 
 import { useSeatsStore } from "~/stores/pages/details/buy-ticket/seats";
+import { useHoldStore } from "~/stores/pages/details/buy-ticket/hold";
 
 const zoom = ref(1);
 const pan = ref({ x: 10, y: 10 });
 
 const seatsStore = useSeatsStore();
+const holdStore = useHoldStore();
+
+const holdMessage = computed(
+  () => holdStore.conflictMessage || holdStore.holdError,
+);
 </script>
 
 <style lang="scss" scoped>
@@ -50,7 +59,7 @@ const seatsStore = useSeatsStore();
 
   .alert {
     color: var(--color-red);
-    overflow: 0;
+    min-height: 46px;
     padding: 15px 0;
     opacity: var(--alert-opacity, 0);
     pointer-events: none;
@@ -75,6 +84,11 @@ const seatsStore = useSeatsStore();
     border-radius: 10px;
     width: 720px;
     height: 400px;
+
+    &.is-disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
   }
 
   :deep(._container_irdvc_2) {

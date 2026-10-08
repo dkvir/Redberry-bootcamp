@@ -3,39 +3,36 @@
     <div class="left-wrapper">
       <h2 class="title f-h2">{{ seatStore.movie.title }}</h2>
       <p class="subtitle f-body-s">
-        {{ session.venue.name }} · Hall {{ session.hall.name }} ·
-        {{ formatDate(session.date) }} · {{ session.time }} ·
-        {{ session.format.name }} ·
-        {{ session.language.name }}
+        {{ buyTicketStore.selectedSession.venue.name }} · Hall
+        {{ buyTicketStore.selectedSession.hall.name }} ·
+        {{ formatDate(buyTicketStore.selectedSession.date) }} ·
+        {{ buyTicketStore.selectedSession.time }} ·
+        {{ buyTicketStore.selectedSession.format.name }} ·
+        {{ buyTicketStore.selectedSession.language.name }}
       </p>
     </div>
+    <div v-if="holdStore.hold" class="held flex-center flex-column">
+      <p class="label f-label-s">SEATS HELD</p>
+      <p class="time f-button">{{ holdStore.timeLeft }}</p>
+    </div>
     <button
-      v-if="buyTicketStore.activeStep == 1"
+      v-else
       :class="['f-body-s flex-center button']"
       @click="buyTicketStore.close()"
     >
       <nuxt-icon name="close-auth" class="close-icon" filled />
     </button>
-    <div v-else class="held flex-center flex-column">
-      <p class="label f-label-s">SEATS HELD</p>
-      <p class="time f-button">7:48</p>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket/index";
 import { useSeatsStore } from "~/stores/pages/details/buy-ticket/seats";
-
-const props = defineProps({
-  session: {
-    type: Object,
-    required: true,
-  },
-});
+import { useHoldStore } from "~/stores/pages/details/buy-ticket/hold";
 
 const buyTicketStore = useBuyTicketStore();
 const seatStore = useSeatsStore();
+const holdStore = useHoldStore();
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-GB", {

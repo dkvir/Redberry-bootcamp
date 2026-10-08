@@ -1,6 +1,35 @@
 import { useAuthStore } from "~/stores/common/auth";
 import { useSeatsStore } from "./seats";
 
+const STORAGE_KEY = "kinoxii:holds";
+
+const readAll = () => {
+  if (!import.meta.client) return {};
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {};
+  } catch {
+    return {};
+  }
+};
+
+const writeAll = (map) => {
+  if (!import.meta.client) return;
+  if (Object.keys(map).length) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
+  } else {
+    localStorage.removeItem(STORAGE_KEY);
+  }
+};
+
+const saveHoldId = (sessionId, holdId) =>
+  writeAll({ ...readAll(), [sessionId]: holdId });
+
+const removeHoldId = (sessionId) => {
+  const map = readAll();
+  delete map[sessionId];
+  writeAll(map);
+};
+
 export const useHoldStore = defineStore("buyTicketHoldStore", () => {
   const authStore = useAuthStore();
   const seatsStore = useSeatsStore();
@@ -12,6 +41,7 @@ export const useHoldStore = defineStore("buyTicketHoldStore", () => {
   const expiredVisibility = ref(false);
   const secondsLeft = ref(0);
 
+  let messageTimer = null;
   let countdownTimer = null;
   let activeSessionId = null;
   let expireCallback = null;
@@ -22,7 +52,8 @@ export const useHoldStore = defineStore("buyTicketHoldStore", () => {
     return `${m}:${s}`;
   });
 
-  const createHold = async (sessionId, onExpire) => {
+  // returns true when a live hold was created
+  const createHold = async (session, onExpire) => {
     if (seatsStore.selectedSeats.length === 0 || holdLoading.value) {
       return false;
     }
@@ -32,7 +63,7 @@ export const useHoldStore = defineStore("buyTicketHoldStore", () => {
     conflictMessage.value = null;
 
     try {
-      const res = await authStore.call(`/sessions/${sessionId}/holds`, {
+      const res = await authStore.call(`/sessions/${session.id}/holds`, {
         method: "POST",
         body: {
           seats: seatsStore.selectedSeats.map((s) => ({
@@ -43,18 +74,50 @@ export const useHoldStore = defineStore("buyTicketHoldStore", () => {
       });
 
       hold.value = res.data;
-      activeSessionId = sessionId;
+      activeSessionId = session.id;
       expireCallback = onExpire;
       startCountdown(res.data.expiresAt);
-      return true;
+
+      if (secondsLeft.value > 0) saveHoldId(session.id, res.data.holdId);
+
+      return secondsLeft.value > 0;
     } catch (err) {
-      await handleError(err, sessionId);
+      await handleError(err, session.id);
       return false;
     } finally {
       holdLoading.value = false;
     }
   };
 
+  // returns true when a live hold for this session was restored
+  const restore = async (sessionId, onExpire) => {
+    const holdId = readAll()[sessionId];
+    if (!holdId) return false;
+
+    try {
+      const res = await authStore.call(`/holds/${holdId}`);
+      const data = res.data;
+
+      if (!data.isLive || data.sessionId !== sessionId) {
+        removeHoldId(sessionId);
+        if (!data.isLive) expiredVisibility.value = true;
+        return false;
+      }
+
+      hold.value = data;
+      activeSessionId = sessionId;
+      expireCallback = onExpire;
+      startCountdown(data.expiresAt);
+
+      return secondsLeft.value > 0;
+    } catch (err) {
+      const status = err.status ?? err.response?.status;
+      if (status === 404 || status === 403) removeHoldId(sessionId);
+      return false;
+    }
+  };
+
+  // errors
   const handleError = async (err, sessionId) => {
     const status = err.status ?? err.response?.status;
     const body = err.data ?? err.response?._data ?? {};
@@ -74,8 +137,11 @@ export const useHoldStore = defineStore("buyTicketHoldStore", () => {
     } else if (status !== 401) {
       holdError.value = "Something went wrong. Please try again.";
     }
+
+    if (holdError.value || conflictMessage.value) scheduleMessageDismiss();
   };
 
+  // countdown
   const startCountdown = (expiresAt) => {
     stopCountdown();
     const end = new Date(expiresAt).getTime();
@@ -89,6 +155,20 @@ export const useHoldStore = defineStore("buyTicketHoldStore", () => {
     if (secondsLeft.value > 0) countdownTimer = setInterval(tick, 1000);
   };
 
+  const matchesSelection = () => {
+    if (!hold.value) return false;
+
+    const held = hold.value.seats;
+    const selected = seatsStore.selectedSeats;
+    if (held.length !== selected.length) return false;
+
+    return selected.every((s) =>
+      held.some(
+        (h) => h.seatId === s.seat.id && h.ticketType.slug === s.ticketType,
+      ),
+    );
+  };
+
   const stopCountdown = () => {
     clearInterval(countdownTimer);
     countdownTimer = null;
@@ -97,29 +177,40 @@ export const useHoldStore = defineStore("buyTicketHoldStore", () => {
   const onExpired = async () => {
     stopCountdown();
     hold.value = null;
+    removeHoldId(activeSessionId);
     seatsStore.clearSelection();
     expiredVisibility.value = true;
     expireCallback?.();
     await seatsStore.fetchSeats(activeSessionId);
   };
 
+  // messages
   const dismissExpired = () => {
     expiredVisibility.value = false;
   };
 
   const dismissMessages = () => {
+    clearTimeout(messageTimer);
     holdError.value = null;
     conflictMessage.value = null;
   };
 
+  const scheduleMessageDismiss = () => {
+    clearTimeout(messageTimer);
+    messageTimer = setTimeout(dismissMessages, 5000);
+  };
+
   const reset = () => {
     stopCountdown();
+    clearTimeout(messageTimer);
     hold.value = null;
     holdError.value = null;
     conflictMessage.value = null;
     expiredVisibility.value = false;
     secondsLeft.value = 0;
   };
+
+  const clearSaved = (sessionId = activeSessionId) => removeHoldId(sessionId);
 
   return {
     hold,
@@ -130,9 +221,14 @@ export const useHoldStore = defineStore("buyTicketHoldStore", () => {
     secondsLeft,
     timeLeft,
     createHold,
+    restore,
     stopCountdown,
+    matchesSelection,
     dismissExpired,
     dismissMessages,
     reset,
+    clearSaved,
+    onExpired,
+    handleError,
   };
 });
