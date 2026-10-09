@@ -43,6 +43,8 @@ export const useProfileStore = defineStore("profileStore", () => {
   const tickets = ref({ upcoming: [], past: [] });
   const ticketsLoading = ref(false);
 
+  const activeState = ref("upcoming");
+
   const fetchTickets = async (filter) => {
     ticketsLoading.value = true;
 
@@ -60,6 +62,44 @@ export const useProfileStore = defineStore("profileStore", () => {
     }
   };
 
+  const changeActiveState = (state) => {
+    activeState.value = state;
+  };
+
+  //refund
+  const refundingId = ref(null);
+  const refundErrors = ref({});
+
+  const refundOrder = async (order) => {
+    refundingId.value = order.id;
+    refundErrors.value[order.id] = "";
+
+    try {
+      const res = await authStore.call(`/orders/${order.reference}/refund`, {
+        method: "POST",
+      });
+      tickets.value.upcoming = tickets.value.upcoming.filter(
+        (o) => o.id !== order.id,
+      );
+      tickets.value.past = [
+        res.data,
+        ...tickets.value.past.filter((o) => o.id !== order.id),
+      ];
+      return true;
+    } catch (e) {
+      const status = e.response?.status;
+      if (status === 401) {
+        authStore.requireLogin(() => refundOrder(order));
+      } else {
+        refundErrors.value[order.id] =
+          e.data?.message ?? "Something went wrong. Please try again.";
+      }
+      return false;
+    } finally {
+      refundingId.value = null;
+    }
+  };
+
   return {
     profile,
     errors,
@@ -68,5 +108,10 @@ export const useProfileStore = defineStore("profileStore", () => {
     tickets,
     ticketsLoading,
     fetchTickets,
+    activeState,
+    changeActiveState,
+    refundingId,
+    refundErrors,
+    refundOrder,
   };
 });
