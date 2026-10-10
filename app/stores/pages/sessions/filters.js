@@ -34,7 +34,12 @@ export const useFiltersStore = defineStore("sessionsFiltersStore", () => {
   }
 
   // selected state
-  const ARRAY_KEYS = ["venues", "formats", "languages", "timeBands"];
+  const PARAM_NAMES = {
+    venues: "venues",
+    formats: "formats",
+    languages: "languages",
+    timeBands: "bands",
+  };
 
   const selected = reactive({
     venues: [],
@@ -42,13 +47,14 @@ export const useFiltersStore = defineStore("sessionsFiltersStore", () => {
     languages: [],
     timeBands: [],
   });
+
   const date = ref(toDateString(new Date()));
   const sort = ref(null);
   const page = ref(1);
 
   function hydrateFromQuery(q) {
-    for (const key of ARRAY_KEYS) {
-      selected[key] = [].concat(q[`${key}[]`] ?? []);
+    for (const [key, param] of Object.entries(PARAM_NAMES)) {
+      selected[key] = [].concat(q[`${param}[]`] ?? []);
     }
     date.value = q.date || toDateString(new Date());
     sort.value = q.sort || null;
@@ -59,8 +65,8 @@ export const useFiltersStore = defineStore("sessionsFiltersStore", () => {
 
   const query = computed(() => {
     const q = {};
-    for (const key of ARRAY_KEYS) {
-      if (selected[key].length) q[`${key}[]`] = [...selected[key]];
+    for (const [key, param] of Object.entries(PARAM_NAMES)) {
+      if (selected[key].length) q[`${param}[]`] = [...selected[key]];
     }
     if (date.value !== toDateString(new Date())) q.date = date.value;
     if (sort.value) q.sort = sort.value;
@@ -72,12 +78,17 @@ export const useFiltersStore = defineStore("sessionsFiltersStore", () => {
     return selected[key].includes(slug);
   }
 
-  const activeCount = computed(() =>
-    Object.values(selected).reduce((sum, arr) => sum + arr.length, 0),
+  const activeCount = computed(
+    () =>
+      Object.values(selected).reduce((sum, arr) => sum + arr.length, 0) +
+      (sort.value ? 1 : 0),
   );
 
   const isDirty = computed(
-    () => activeCount.value > 0 || date.value !== toDateString(new Date()),
+    () =>
+      activeCount.value > 0 ||
+      date.value !== toDateString(new Date()) ||
+      sort.value !== null,
   );
 
   function toggle(key, value) {
@@ -98,7 +109,8 @@ export const useFiltersStore = defineStore("sessionsFiltersStore", () => {
   }
 
   function setSort(value) {
-    sort.value = value;
+    if (value == null) return;
+    sort.value = value === sorts.value[0]?.id ? null : value;
     page.value = 1;
   }
 
@@ -107,8 +119,9 @@ export const useFiltersStore = defineStore("sessionsFiltersStore", () => {
   }
 
   function reset() {
-    ARRAY_KEYS.forEach((key) => (selected[key] = []));
+    Object.keys(PARAM_NAMES).forEach((key) => (selected[key] = []));
     date.value = toDateString(new Date());
+    sort.value = null;
     page.value = 1;
   }
 
@@ -118,7 +131,7 @@ export const useFiltersStore = defineStore("sessionsFiltersStore", () => {
     const allowed = new Set(
       venues.value
         .filter((v) => selected.venues.includes(v.slug))
-        .flatMap((v) => v.formats),
+        .flatMap((v) => v.formats.map((f) => f.slug)),
     );
     return formats.value.filter((f) => allowed.has(f.slug));
   });

@@ -1,7 +1,7 @@
 <template>
   <div ref="root" class="sort">
     <div class="trigger flex align-center" @click="isOpen = !isOpen">
-      <div class="title">Sort:</div>
+      <div class="title f-body-m">Sort:</div>
       <span class="name">{{ currentLabel }}</span>
       <nuxt-icon
         name="arrow-down"
@@ -28,6 +28,7 @@
 
 <script setup>
 import { useFiltersStore } from "~/stores/pages/sessions/filters";
+import { onClickOutside } from "@vueuse/core";
 
 const filterStore = useFiltersStore();
 
@@ -36,9 +37,7 @@ const isOpen = ref(false);
 
 const sortValue = (item) => item.id;
 
-const currentValue = computed(
-  () => filterStore.sort ?? sortValue(filterStore.sorts[0] ?? {}),
-);
+const currentValue = computed(() => filterStore.sort ?? "time_asc");
 
 const currentLabel = computed(
   () =>
@@ -51,21 +50,21 @@ const select = (item) => {
   isOpen.value = false;
 };
 
-const onOutsideClick = (e) => {
-  if (root.value && !root.value.contains(e.target)) isOpen.value = false;
-};
-
-onMounted(() => document.addEventListener("click", onOutsideClick));
-onBeforeUnmount(() => document.removeEventListener("click", onOutsideClick));
+onClickOutside(root, () => (isOpen.value = false));
 </script>
 
 <style lang="scss" scoped>
 .sort {
   position: relative;
+  width: 250px;
 
   .trigger {
     gap: 8px;
     cursor: pointer;
+
+    .title {
+      color: var(--filter-color, var(--color-text-secondary));
+    }
   }
 
   .arrow-icon.is-flipped {

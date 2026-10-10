@@ -88,11 +88,14 @@
 
 <script setup>
 import { useFiltersStore } from "~/stores/pages/sessions/filters";
-
-const filterStore = useFiltersStore();
+import { useCatalogueStore } from "~/stores/pages/sessions/catalogue";
 
 const route = useRoute();
 const router = useRouter();
+const filterStore = useFiltersStore();
+const catalogue = useCatalogueStore();
+
+filterStore.hydrateFromQuery(route.query);
 
 const formatLabel = (str) => {
   const [label, sublabel] = str.split(" (");
@@ -103,7 +106,13 @@ const formatLabel = (str) => {
   };
 };
 
-filterStore.hydrateFromQuery(route.query);
+await useAsyncData("filter-options", () => filterStore.fetchOptions());
+
+await useAsyncData(
+  "sessions",
+  () => catalogue.fetchSessions(filterStore.query),
+  { watch: [() => JSON.stringify(filterStore.query)] },
+);
 
 watch(
   () => filterStore.query,
