@@ -1,9 +1,11 @@
 import { useAuthStore } from "~/stores/common/auth";
 import { useMovieDetailsStore } from "~/stores/pages/details/movie-details";
+import { useFiltersStore } from "~/stores/pages/sessions/filters";
 
 export const useSeatsStore = defineStore("buyTicketSeatsStore", () => {
   const authStore = useAuthStore();
   const detailsStore = useMovieDetailsStore();
+  const filterStore = useFiltersStore();
 
   const seatMap = ref(null);
   const seatsLoading = ref(false);
@@ -52,7 +54,7 @@ export const useSeatsStore = defineStore("buyTicketSeatsStore", () => {
 
     if (seat.state !== "available" && !seat.isMine) return;
 
-    if (selectedSeats.value.length >= 3) {
+    if (selectedSeats.value.length >= filterStore.options.maxSeatsPerOrder) {
       showLimitAlert();
       return;
     }
