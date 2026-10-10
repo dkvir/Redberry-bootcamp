@@ -10,7 +10,7 @@
         </h2>
         <tiny-chip
           :label="item.movie.ageRating.code"
-          :red="item.movie.ageRating.code.minAge"
+          :red="item.movie.ageRating.minAge"
         />
       </div>
       <div class="duration f-body-m">{{ item.movie.runtimeMinutes }} min</div>

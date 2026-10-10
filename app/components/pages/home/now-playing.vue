@@ -22,7 +22,7 @@
             </p>
             <tiny-chip
               :label="movie.ageRating.code"
-              :red="movie.ageRating.code.minAge"
+              :red="movie.ageRating.minAge"
             />
             <p class="synopsis f-body-m">
               {{ movie.synopsis }}

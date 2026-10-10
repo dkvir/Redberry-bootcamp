@@ -1,5 +1,5 @@
 <template>
-  <div :class="['chip flex-center', { 'is-red': red }]">
+  <div :class="['chip flex-center', { 'is-red': isRed }]">
     <nuxt-icon v-if="iconName" :name="iconName" class="icon" filled />
     <span class="span">{{ label }}</span>
   </div>
@@ -12,12 +12,19 @@ const props = defineProps({
     required: true,
   },
   red: {
-    type: Boolean,
+    type: [Boolean, Number, String],
     default: false,
   },
   iconName: {
     type: String,
   },
+});
+
+const isRed = computed(() => {
+  if (typeof props.red === "string") return /\d/.test(props.red);
+  if (typeof props.red === "number") return props.red > 0;
+
+  return props.red;
 });
 </script>
 

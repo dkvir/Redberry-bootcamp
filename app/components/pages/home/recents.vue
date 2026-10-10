@@ -18,7 +18,8 @@
           <div class="info flex-column">
             <h2 class="title f-button">{{ movie.title }}</h2>
             <p class="genre">{{ movie.genre }} · {{ movie.duration }} min</p>
-            <tiny-chip :label="movie.age" red />
+
+            <tiny-chip :label="movie.age" :red="movie.age" />
           </div>
         </NuxtLink>
       </li>
