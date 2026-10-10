@@ -1,7 +1,7 @@
 <template>
   <div class="avatar flex-center">
     <img v-if="user.avatar" class="img" :src="user.avatar" alt="" />
-    <p class="initials f-label-s uppercase">
+    <p v-else class="initials f-label-s uppercase">
       {{ user.username.slice(0, 1) }}
     </p>
     <div
@@ -30,10 +30,11 @@ const props = defineProps({
   @include size(40px);
   background-color: var(--color-bg-card);
   border-radius: 8px;
+  overflow: hidden;
 
   .img {
     @include size(100%);
-    object-fit: contain;
+    object-fit: cover;
   }
 
   .circle {
