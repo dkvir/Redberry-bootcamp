@@ -61,6 +61,7 @@ function formatTime(dateString) {
   gap: 10px;
 
   .ticket {
+    width: 270px;
     height: 81px;
     background-color: var(--color-bg-page);
     border-radius: 8px;
@@ -70,6 +71,8 @@ function formatTime(dateString) {
       gap: 8px;
       padding: 15px 20px;
       &.left {
+        flex: 1;
+        min-width: 0;
         border-right: 1px dashed var(--color-text-primary);
         &::before {
           content: "";
