@@ -1,7 +1,10 @@
 <template>
   <div class="tickets">
     <pages-profile-tickets-states />
-    <ul class="list flex-column">
+    <ul
+      v-if="profileStore.tickets[profileStore.activeState].length > 0"
+      class="list flex-column"
+    >
       <li
         v-for="item in profileStore.tickets[profileStore.activeState]"
         :key="item.id"
@@ -40,6 +43,8 @@
         </div>
       </li>
     </ul>
+
+    <div v-else class="no-tickets f-button">You have no tickets</div>
   </div>
 </template>
 
@@ -131,6 +136,11 @@ const onRefund = async (item) => {
         }
       }
     }
+  }
+
+  .no-tickets {
+    color: var(--color-red);
+    margin-top: 24px;
   }
 }
 </style>

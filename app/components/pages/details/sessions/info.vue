@@ -57,9 +57,7 @@ const pickDefaultDate = (dates) => {
   return dates.includes(today) ? today : (dates[0] ?? null);
 };
 
-const selectedDate = useState("details-selected-date", () =>
-  pickDefaultDate(availableDates.value),
-);
+const selectedDate = ref(pickDefaultDate(availableDates.value));
 
 watch(
   availableDates,

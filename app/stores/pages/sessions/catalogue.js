@@ -34,6 +34,7 @@ export const useCatalogueStore = defineStore("sessionsCatalogueStore", () => {
   const totalSessions = computed(() => meta.value?.totalSessions ?? 0);
   const totalMovies = computed(() => meta.value?.totalMovies ?? 0);
   const lastPage = computed(() => meta.value?.lastPage ?? 1);
+  const perPage = computed(() => meta.value?.perPage ?? 10);
 
   return {
     groups,
@@ -43,6 +44,7 @@ export const useCatalogueStore = defineStore("sessionsCatalogueStore", () => {
     totalSessions,
     totalMovies,
     lastPage,
+    perPage,
     fetchSessions,
   };
 });

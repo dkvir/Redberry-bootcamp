@@ -8,7 +8,9 @@
             'hall-link flex-column justify-between',
             { 'is-sold-out': session.isSoldOut },
           ]"
-          @click="onSelect($event, session)"
+          :tabindex="session.isSoldOut ? -1 : undefined"
+          :aria-disabled="session.isSoldOut"
+          @click.capture="onSelect($event, session)"
         >
           <div class="header flex-center justify-between">
             <div class="time f-h3">{{ formatTime(session.startsAt) }}</div>
