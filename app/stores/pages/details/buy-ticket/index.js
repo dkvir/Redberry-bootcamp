@@ -108,6 +108,11 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
   };
 
   const open = async (session) => {
+    if (!authStore.isLoggedIn) {
+      authStore.openLogin(() => open(session));
+      return;
+    }
+
     holdStore.reset();
     seatsStore.reset();
     resetForm();
