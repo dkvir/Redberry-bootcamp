@@ -25,8 +25,33 @@
 import { useFiltersStore } from "~/stores/pages/sessions/filters";
 import { useCatalogueStore } from "~/stores/pages/sessions/catalogue";
 
+const route = useRoute();
+const router = useRouter();
 const filterStore = useFiltersStore();
 const catalogueStore = useCatalogueStore();
+
+filterStore.hydrateFromQuery(route.query);
+
+await useAsyncData("filter-options", () => filterStore.fetchOptions());
+
+await useAsyncData(
+  "sessions",
+  () => catalogueStore.fetchSessions(filterStore.query),
+  { watch: [() => JSON.stringify(filterStore.query)] },
+);
+
+watch(
+  () => filterStore.query,
+  (q) => {
+    if (router.resolve({ query: q }).fullPath === route.fullPath) return;
+    router.push({ query: q });
+  },
+);
+
+watch(
+  () => route.query,
+  (q) => filterStore.hydrateFromQuery(q),
+);
 
 function onPageChange(page) {
   window.scrollTo({ top: 0, behavior: "smooth" });
