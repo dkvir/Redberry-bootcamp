@@ -23,6 +23,7 @@
         :maxZoom="2"
         :dblClickZoomStep="0.4"
         :wheelZoomStep="0.05"
+        :enableControlButton="false"
         v-model:pan="pan"
         v-model:zoom="zoom"
       >
