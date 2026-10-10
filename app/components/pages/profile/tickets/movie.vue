@@ -31,7 +31,7 @@
         <div class="body-box flex-column">
           <div class="label f-overline uppercase">venue</div>
           <div class="value f-label-m">
-            {{ item.session.venue.name }}
+            {{ item.session.venue.name }} · Hall {{ item.session.hall.name }}
           </div>
         </div>
         <div class="body-box flex-column">

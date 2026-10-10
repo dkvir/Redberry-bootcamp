@@ -132,6 +132,7 @@ watch(
 .filters {
   padding: 24px;
   width: 355px;
+  height: fit-content;
   background-color: var(--color-bg-card);
   border-radius: 15px;
 
