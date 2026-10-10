@@ -2,8 +2,11 @@
   <div class="movie-details-page">
     <div v-if="detailsStore.movie" class="movie-details-page">
       <pages-details-overview :movie="detailsStore.movie" />
-
-      <div v-if="!canBuy" class="age-control f-h2">
+      <div v-if="buyBlock === 'profile'" class="age-control f-h3">
+        Complete your profile to buy tickets.
+        <nuxt-link to="/profile" class="link">Go to profile</nuxt-link>
+      </div>
+      <div v-else-if="buyBlock === 'age'" class="age-control f-h3">
         This film is rated {{ detailsStore.movie.ageRating.code }}. You cannot
         buy tickets for it with this account.
       </div>
@@ -49,14 +52,18 @@ if (detailsStore.notFound) {
   });
 }
 
-const canBuy = computed(() => {
-  if (!authStore.isLoggedIn) return true;
+const buyBlock = computed(() => {
+  if (!authStore.isLoggedIn) return null;
+
+  if (!authStore.user.profileComplete) return "profile";
 
   const minAge = detailsStore.movie?.ageRating?.minAge ?? 0;
-  if (!minAge) return true;
+  if (minAge && (authStore.age == null || authStore.age < minAge)) return "age";
 
-  return authStore.age != null && authStore.age >= minAge;
+  return null;
 });
+
+const canBuy = computed(() => !buyBlock.value);
 
 onMounted(() => {
   watch(
@@ -84,6 +91,11 @@ onMounted(() => {
   .age-control {
     padding: 34px 0 0 51px;
     color: var(--color-red);
+
+    .link {
+      color: var(--color-text-secondary);
+      margin-left: 5px;
+    }
   }
 
   .is-disabled {

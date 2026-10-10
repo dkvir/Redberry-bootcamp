@@ -113,6 +113,17 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
       return;
     }
 
+    if (!authStore.user.profileComplete) {
+      await navigateTo("/profile");
+      return;
+    }
+
+    const minAge = session.movie?.ageRating?.minAge ?? 0;
+    if (minAge && (authStore.age == null || authStore.age < minAge)) {
+      await navigateTo(`/sessions/${session.movie.slug}`);
+      return;
+    }
+
     holdStore.reset();
     seatsStore.reset();
     resetForm();
