@@ -49,10 +49,17 @@ const formatDate = (dateString) => {
   gap: 6px;
   flex-wrap: nowrap;
   margin-top: 12px;
+  width: 100%;
+  overflow-x: scroll;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .date {
     gap: 6px;
     padding: 11px 6px;
+    width: 40px;
     background-color: var(--date-bg, var(--color-bg-raised));
     border-radius: 8px;
     color: var(--color-text-primary);

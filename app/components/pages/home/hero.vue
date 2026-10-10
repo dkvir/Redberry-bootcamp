@@ -26,7 +26,7 @@
           <div class="chips flex-center">
             <tiny-chip
               :label="movie.ageRating.code"
-              :red="movie.ageRating.code !== 'PG'"
+              :red="movie.ageRating.minAge"
             />
 
             <tiny-chip

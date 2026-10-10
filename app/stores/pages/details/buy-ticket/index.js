@@ -109,7 +109,7 @@ export const useBuyTicketStore = defineStore("buyTicketStore", () => {
 
   const open = async (session) => {
     if (!authStore.isLoggedIn) {
-      authStore.openLogin(() => open(session));
+      authStore.requireLogin(() => open(session));
       return;
     }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="movie flex">
+  <nuxt-link :to="`/sessions/${item.movie.slug}`" class="movie flex">
     <div class="poster">
       <img :src="item.movie.posterUrl" :alt="item.movie.title" class="img" />
     </div>
@@ -10,12 +10,12 @@
         </h2>
         <tiny-chip
           :label="item.movie.ageRating.code"
-          :red="item.movie.ageRating.code !== 'PG'"
+          :red="item.movie.ageRating.code.minAge"
         />
       </div>
       <div class="duration f-body-m">{{ item.movie.runtimeMinutes }} min</div>
     </div>
-  </div>
+  </nuxt-link>
 </template>
 
 <script setup>
@@ -30,6 +30,12 @@ const props = defineProps({
 <style lang="scss" scoped>
 .movie {
   gap: 16px;
+  width: fit-content;
+
+  &:hover {
+    --image-scale: 1.1;
+    --title-color: var(--color-text-secondary);
+  }
 
   .poster {
     width: 56px;
@@ -39,6 +45,8 @@ const props = defineProps({
     .img {
       @include size(100%);
       object-fit: cover;
+      transform: scale(var(--image-scale, 1));
+      @include default-transitions(transform);
     }
   }
 
@@ -49,7 +57,8 @@ const props = defineProps({
       gap: 12px;
 
       .title {
-        color: var(--color-text-primary);
+        color: var(--title-color, var(--color-text-primary));
+        @include default-transitions(color);
       }
     }
     .duration {

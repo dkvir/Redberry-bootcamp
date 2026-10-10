@@ -36,11 +36,18 @@
       <p class="value f-label-m">₾{{ movie.fromPrice }}</p>
     </div>
 
-    <div :class="['note', { 'is-restricted': movie.ageRating.code !== 'PG' }]">
+    <div
+      :class="[
+        'note',
+        {
+          'is-restricted': movie.ageRating.minAge,
+        },
+      ]"
+    >
       <p class="label f-label-s uppercase">RATING NOTE</p>
       <div class="note-info flex-start">
         <div class="rating">{{ movie.ageRating.code }}</div>
-        <div v-if="movie.ageRating.code !== 'PG'" class="warning">
+        <div v-if="movie.ageRating.code.minAge" class="warning">
           Not recommended for under-{{ movie.ageRating.minAge }}s. Tickets
           require an account aged {{ movie.ageRating.minAge }} or over.
         </div>

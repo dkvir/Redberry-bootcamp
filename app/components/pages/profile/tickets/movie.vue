@@ -14,7 +14,7 @@
         </h2>
         <tiny-chip
           :label="item.session.movie.ageRating.code"
-          :red="item.session.movie.ageRating.code !== 'PG'"
+          :red="item.session.movie.ageRating.code.minAge"
         />
         <div class="duration f-body-m">
           {{ item.session.movie.runtimeMinutes }} min

@@ -22,7 +22,7 @@
             </p>
             <tiny-chip
               :label="movie.ageRating.code"
-              :red="movie.ageRating.code !== 'PG'"
+              :red="movie.ageRating.code.minAge"
             />
           </div>
           <tiny-buttons-notify

@@ -40,6 +40,7 @@
 
 <script setup>
 import { useBuyTicketStore } from "~/stores/pages/details/buy-ticket/index";
+import { useAuthStore } from "~/stores/common/auth";
 
 const props = defineProps({
   item: {
@@ -49,6 +50,7 @@ const props = defineProps({
 });
 
 const buyTicketStore = useBuyTicketStore();
+const authStore = useAuthStore();
 
 function formatTime(dateString) {
   return dateString.slice(11, 16);
@@ -59,6 +61,16 @@ function onSelect(event, session) {
     event.preventDefault();
     return;
   }
+
+  if (!authStore.isLoggedIn) {
+    event.preventDefault();
+    authStore.requireLogin(() => {
+      buyTicketStore.open(session);
+      navigateTo(`/sessions/${session.movie.slug}`);
+    });
+    return;
+  }
+
   buyTicketStore.open(session);
 }
 </script>
@@ -87,6 +99,12 @@ function onSelect(event, session) {
     height: 110px;
     border-radius: 16px;
     background-color: var(--color-bg-card);
+    border: 2px solid var(--border-color, transparent);
+    @include default-transitions(border);
+
+    &:hover {
+      --border-color: var(--color-bg-raised);
+    }
   }
 
   .hall-link {
